@@ -32,7 +32,11 @@ public class Board {
 	}
 	
 	public Box getBox(int x, int y) {
-		return grid[x][y];
+		try {
+			return grid[x][y];
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
 	}
 	
 	public boolean isComplete() {
@@ -41,16 +45,19 @@ public class Board {
 	
 	public ArrayList<SwapPair> generateSwaps() {
 		ArrayList<SwapPair> possibleSwaps = new ArrayList<SwapPair>();
-		// Add horizontal swaps
-		for (int x = 0; x < WIDTH - 1; x++) {
-			for (int y = 0; y < HEIGHT; y++) {
-				
-			}
-		}
-		// Add vertical swaps
 		for (int x = 0; x < WIDTH; x++) {
-			for (int y = 0; y < HEIGHT - 1; y++) {
-				
+			for (int y = 0; y < HEIGHT; y++) {
+				Box boxCenter = getBox(x, y);
+				Box boxEast = getBox(x + 1, y);
+				Box boxNorth = getBox(x, y + 1);
+				if (boxEast != null && boxCenter.type != boxEast.type && (boxCenter.type > 0 || boxEast.type > 0)) {
+					// Add horizontal swaps
+					possibleSwaps.add(new SwapPair(boxCenter, boxEast));
+				}
+				if (boxNorth != null && boxCenter.type != boxNorth.type && (boxCenter.type > 0 || boxNorth.type > 0)) {
+					// Add vertical swaps
+					possibleSwaps.add(new SwapPair(boxCenter, boxNorth));
+				}
 			}
 		}
 		return possibleSwaps;
@@ -72,12 +79,6 @@ public class Board {
 	}
 	
 	public static void main(String[] args) {
-		Board a = new Board();
-		a.grid[0][1].type = 3;
-		a.grid[5][5].type = 2;
-		System.out.println(a.toString());
-		Board b = new Board(a);
-		System.out.println(b.toString());
 	}
 
 }
