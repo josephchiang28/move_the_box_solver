@@ -25,15 +25,36 @@ public class Board {
 		}
 	}
 	
+	public int getBox(int x, int y) {
+		return grid[x][y];
+	}
+	
+	public boolean isComplete() {
+		return totalBoxes == 0;
+	}
+	
+	public String toString() {
+		String s = "+-------------+\n";
+		for (int i=8; i>=0; i--) {
+			s += "|";
+			for (int j=0; j<7; j++) {
+				s += getBox(j, i) + "|";
+			}
+			if (i != 0) {
+				s += "\n|-+-+-+-+-+-+-|\n";
+			}
+		}
+		s += "\n+-------------+";
+		return s;
+	}
+	
 	public static void main(String[] args) {
 		Board a = new Board();
 		a.grid[0][1] = 3;
 		a.grid[5][5] = 2;
-		System.out.println(a.grid[5][5]);
+		System.out.println(a.toString());
 		Board b = new Board(a);
-		System.out.println(a.grid[0][1]);
-		System.out.println(a.grid[5][5]);
-		System.out.println(a.grid[2][2]);
+		System.out.println(b.toString());
 	}
 
 }
