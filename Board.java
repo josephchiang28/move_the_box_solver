@@ -39,6 +39,14 @@ public class Board {
 		}
 	}
 	
+	// Need to think about whether to change totalBoxes count here
+	public void setBox(int x, int y, int type) {
+//		if (getBox(x, y).type == type) {
+//			return;
+//		}
+		grid[x][y].type = type;
+	}
+	
 	public boolean isComplete() {
 		return totalBoxes == 0;
 	}
@@ -50,17 +58,58 @@ public class Board {
 				Box boxCenter = getBox(x, y);
 				Box boxEast = getBox(x + 1, y);
 				Box boxNorth = getBox(x, y + 1);
-				if (boxEast != null && boxCenter.type != boxEast.type && (boxCenter.type > 0 || boxEast.type > 0)) {
+				if (boxEast != null && boxCenter.type != boxEast.type && !(boxCenter.isEmpty() && boxEast.isEmpty())) {
 					// Add horizontal swaps
 					possibleSwaps.add(new SwapPair(boxCenter, boxEast));
 				}
-				if (boxNorth != null && boxCenter.type != boxNorth.type && (boxCenter.type > 0 || boxNorth.type > 0)) {
+				if (boxNorth != null && boxCenter.type != boxNorth.type && !(boxCenter.isEmpty() && boxNorth.isEmpty())) {
 					// Add vertical swaps
 					possibleSwaps.add(new SwapPair(boxCenter, boxNorth));
 				}
 			}
 		}
 		return possibleSwaps;
+	}
+	
+	public void popBoxes() {
+		// TODO: DROP BOXES
+		Board newBoard = new Board(this);
+		boolean isBoardChanged = true;
+		while (isBoardChanged) {
+			isBoardChanged = false;
+			for (int x = 0; x < WIDTH; x++) {
+				for (int y = 0; y < HEIGHT; y++) {
+					if (getBox(x,y).isEmpty()) {
+						continue;
+					}
+					for (int[] direction: DIRECTIONS.values()) {
+						int count = 0;
+						int boxType = getBox(x, y).type;
+						Box boxNext;
+						do {
+							count++;
+							int nextX = x + direction[0];
+							int nextY = y + direction[1];
+							boxNext = getBox(nextX, nextY);
+							if (boxNext == null) {
+								break;
+							}
+						} while (boxType == boxNext.type);
+						if (count >= 3) {
+							for (int i = 0; i < count; i++) {
+								int prevX = x - direction[0];
+								int prevY = y - direction[0];
+								if (!getBox(prevX, prevY).isEmpty()) {
+									newBoard.setBox(prevX, prevY, 0);
+									newBoard.totalBoxes--;
+									isBoardChanged = true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public String toString() {

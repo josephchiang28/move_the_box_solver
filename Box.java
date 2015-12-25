@@ -10,4 +10,8 @@ public class Box {
 		this.y = y;
 		this.type = type;
 	}
+	
+	public boolean isEmpty() {
+		return type == 0;
+	}
 }
