@@ -8,4 +8,8 @@ public class SwapPair {
 		this.box1 = box1;
 		this.box2 = box2;
 	}
+	
+	public String toString() {
+		return String.format("%1$d%2$d%3$d%4$d", box1.x, box1.y, box2.x, box2.y);
+	}
 }

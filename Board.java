@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Board {
 
@@ -25,8 +24,11 @@ public class Board {
 			for (int y = 0; y < HEIGHT; y++) {
 				grid[x][y] = new Box(x, y, oldBoard.getBox(x, y).type);
 			}
-//			System.arraycopy(oldBoard.grid[x], 0, grid[x], 0, HEIGHT);
 		}
+	}
+	
+	public int getTotalBoxes() {
+		return totalBoxes;
 	}
 	
 	public Box getBox(int x, int y) {
@@ -47,6 +49,12 @@ public class Board {
 			totalBoxes--;
 		}
 		box.type = type;
+	}
+	
+	public void swapBoxes(Box box1, Box box2) {
+		int box1Type = box1.type;
+		setBoxType(box1.x, box1.y, box2.type);
+		setBoxType(box2.x, box2.y, box1Type);
 	}
 	
 	public void swapBoxTypes(int x1, int y1, int x2, int y2) {
@@ -82,7 +90,6 @@ public class Board {
 	public void reachSteadyState() {
 		boolean isBoardChanged = true;
 		while (isBoardChanged) {
-			Board boardNext = new Board(this);
 			
 			// Drop boxes
 			for (int x = 0; x < WIDTH; x++) {
@@ -90,14 +97,15 @@ public class Board {
 				for (int y = 0; y < HEIGHT; y++) {
 					if (!getBox(x, y).isEmpty()) {
 						if (y > bottom) {
-							boardNext.swapBoxTypes(x, bottom, x, y);
+							swapBoxTypes(x, bottom, x, y);
 						}
 						bottom++;
 					}
 				}
 			}
-			isBoardChanged = false;
 			
+			Board boardNext = new Board(this);
+			isBoardChanged = false;
 			// TODO: NEED TO ABSTRACT THE FOLLOWING
 			// Find consecutive vertical boxes to pop
 			for (int x = 0; x < WIDTH; x++) {
