@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public class MoveTheBox {
 	
@@ -12,10 +13,7 @@ public class MoveTheBox {
 		for (SwapPair swapPair: possibleSwaps) {
 			Board boardNext = new Board(board);
 			boardNext.swapBoxes(swapPair.box1, swapPair.box2);
-//			System.out.println(swapPair);
-//			System.out.println(boardNext);
 			boardNext.reachSteadyState();
-//			System.out.println(boardNext);
 			if (boardNext.isComplete()) {
 				ArrayList<SwapPair> a = new ArrayList<SwapPair>();
 				a.add(swapPair);
@@ -31,6 +29,46 @@ public class MoveTheBox {
 			}
 		}
 		return curMoves;
+	}
+	
+	public boolean verifyDistinctMoves(ArrayList<ArrayList<SwapPair>> allMoves) {
+		TreeSet<String> distinctMoves = new TreeSet<String>();
+		for (ArrayList<SwapPair> moves: allMoves) {
+			String movesString = "";
+			for (SwapPair swapPair: moves) {
+				movesString += swapPair.toString();
+				movesString += " ";
+			}
+			if (distinctMoves.contains(movesString)) {
+				return false;
+			}
+			distinctMoves.add(movesString);
+		}
+//		System.out.println(distinctMoves);
+//		System.out.println(distinctMoves.size());
+		return true;
+	}
+	
+	public boolean verifySolution(Board board, ArrayList<ArrayList<SwapPair>> solution) {
+		boolean allPass = true;
+		for (ArrayList<SwapPair> moves: solution) {
+			Board boardTest = new Board(board);
+			for (SwapPair swap: moves) {
+				if (board.isComplete()) {
+					allPass = false;
+					System.out.print("Board completed with redundant moves: ");
+					System.out.println(moves);
+				}
+				boardTest.swapBoxes(swap.box1, swap.box2);
+				boardTest.reachSteadyState();
+			}
+			if (!boardTest.isComplete()) {
+				allPass = false;
+				System.out.print("Board not completed with moves: ");
+				System.out.println(moves);
+			}
+		}
+		return allPass;
 	}
 	
 	public static void main(String[] args) {
@@ -124,13 +162,19 @@ public class MoveTheBox {
 		board.setBoxType(5, 1, 1);
 		board.setBoxType(6, 0, 4);
 		System.out.println(board.toString());
+		long startTime = System.currentTimeMillis();
 		ArrayList<ArrayList<SwapPair>> solution = mtb.solve(board, 4);
+		long endTime = System.currentTimeMillis();
+		System.out.println(String.format("Took %1$d milliseconds", endTime - startTime));
 //		End Hamburg lvl 24
 		
 		System.out.println(solution.size());
 		System.out.println(solution);
-		 
-		 
+		
+		System.out.println("Verify if all solution are distinct");
+		System.out.println(mtb.verifyDistinctMoves(solution));
+		System.out.println("Verify if solution actually solves");
+		System.out.println(mtb.verifySolution(board, solution));
 	}
 
 }
