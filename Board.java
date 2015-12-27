@@ -5,11 +5,6 @@ public class Board {
 
 	public static final int WIDTH = 7;
 	public static final int HEIGHT = 9;
-	private static final HashMap<Integer,int[]> DIRECTIONS = new HashMap<Integer,int[]>() 
-		{{ put(0, new int[] {1, 0});     
-		   put(90, new int[] {0, 1});
-		   put(180, new int[] {-1, 0});
-		   put(270, new int[] {0, -1}); }};
 	private int totalBoxes;
 	private Box[][] grid;
 		   
@@ -26,8 +21,11 @@ public class Board {
 	public Board(Board oldBoard) {
 		totalBoxes = oldBoard.totalBoxes;
 		grid = new Box[WIDTH][HEIGHT];
-		for (int x = 0; x < oldBoard.grid.length; x++) {
-			System.arraycopy(oldBoard.grid[x], 0, grid[x], 0, HEIGHT);
+		for (int x = 0; x < WIDTH; x++) {
+			for (int y = 0; y < HEIGHT; y++) {
+				grid[x][y] = new Box(x, y, oldBoard.getBox(x, y).type);
+			}
+//			System.arraycopy(oldBoard.grid[x], 0, grid[x], 0, HEIGHT);
 		}
 	}
 	
@@ -39,12 +37,22 @@ public class Board {
 		}
 	}
 	
-	// Need to think about whether to change totalBoxes count here
-	public void setBox(int x, int y, int type) {
-//		if (getBox(x, y).type == type) {
-//			return;
-//		}
-		grid[x][y].type = type;
+	public void setBoxType(int x, int y, int type) {
+		Box box = getBox(x, y);
+		if (box.type == type) {
+			return;
+		} else if (box.isEmpty() && type > 0) {
+			totalBoxes++;
+		} else if (!box.isEmpty() && type == 0) {
+			totalBoxes--;
+		}
+		box.type = type;
+	}
+	
+	public void swapBoxTypes(int x1, int y1, int x2, int y2) {
+		int box1Type = getBox(x1, y1).type;
+		setBoxType(x1, y1, getBox(x2, y2).type);
+		setBoxType(x2, y2, box1Type);
 	}
 	
 	public boolean isComplete() {
@@ -71,44 +79,75 @@ public class Board {
 		return possibleSwaps;
 	}
 	
-	public void popBoxes() {
-		// TODO: DROP BOXES
-		Board newBoard = new Board(this);
+	public void reachSteadyState() {
 		boolean isBoardChanged = true;
 		while (isBoardChanged) {
-			isBoardChanged = false;
+			Board boardNext = new Board(this);
+			
+			// Drop boxes
 			for (int x = 0; x < WIDTH; x++) {
+				int bottom = 0;
 				for (int y = 0; y < HEIGHT; y++) {
-					if (getBox(x,y).isEmpty()) {
-						continue;
-					}
-					for (int[] direction: DIRECTIONS.values()) {
-						int count = 0;
-						int boxType = getBox(x, y).type;
-						Box boxNext;
-						do {
-							count++;
-							int nextX = x + direction[0];
-							int nextY = y + direction[1];
-							boxNext = getBox(nextX, nextY);
-							if (boxNext == null) {
-								break;
-							}
-						} while (boxType == boxNext.type);
-						if (count >= 3) {
-							for (int i = 0; i < count; i++) {
-								int prevX = x - direction[0];
-								int prevY = y - direction[0];
-								if (!getBox(prevX, prevY).isEmpty()) {
-									newBoard.setBox(prevX, prevY, 0);
-									newBoard.totalBoxes--;
-									isBoardChanged = true;
-								}
-							}
+					if (!getBox(x, y).isEmpty()) {
+						if (y > bottom) {
+							boardNext.swapBoxTypes(x, bottom, x, y);
 						}
+						bottom++;
 					}
 				}
 			}
+			isBoardChanged = false;
+			
+			// TODO: NEED TO ABSTRACT THE FOLLOWING
+			// Find consecutive vertical boxes to pop
+			for (int x = 0; x < WIDTH; x++) {
+				for (int y = 0; y < HEIGHT; y++) {
+					Box boxStart = getBox(x, y);
+					if (boxStart.isEmpty()) {
+						continue;
+					}
+					int count = 0;
+					int newY = y;
+					Box boxNext = null;
+					do {
+						count++;
+						boxNext = getBox(x, ++newY);
+					} while (boxNext != null && boxStart.type == boxNext.type);
+					if (count >= 3) {
+						isBoardChanged = true;
+						for (int i = y; i < y + count; i++) {
+							boardNext.setBoxType(x, i, 0);
+						}
+					}
+					y += count - 1;
+				}
+			}
+			// Find consecutive horizontal boxes to pop
+			for (int y = 0; y < HEIGHT; y++) {
+				for (int x = 0; x < WIDTH; x++) {
+					Box boxStart = getBox(x, y);
+					if (boxStart.isEmpty()) {
+						continue;
+					}
+					int count = 0;
+					int newX = x;
+					Box boxNext = null;
+					do {
+						count++;
+						boxNext = getBox(++newX, y);
+					} while (boxNext != null && boxStart.type == boxNext.type);
+					if (count >= 3) {
+						for (int i = x; i < x + count; i++) {
+							isBoardChanged = true;
+							boardNext.setBoxType(i, y, 0);
+						}
+					}
+					y += count - 1;
+				}
+			}
+			// Copy Grid
+			grid = boardNext.grid;
+			totalBoxes = boardNext.totalBoxes;
 		}
 	}
 	
@@ -128,6 +167,23 @@ public class Board {
 	}
 	
 	public static void main(String[] args) {
+		Board b = new Board();
+		b.setBoxType(2, 0, 1);
+		b.setBoxType(3, 0, 2);
+		b.setBoxType(4, 0, 2);
+		b.setBoxType(2, 1, 1);
+		b.setBoxType(3, 1, 2);
+		b.setBoxType(4, 1, 2);
+		b.setBoxType(2, 2, 1);
+		b.setBoxType(3, 2, 1);
+		b.setBoxType(4, 2, 1);
+		System.out.println(b.toString());
+		System.out.println(b.totalBoxes);
+		b.reachSteadyState();
+		System.out.println(b.toString());
+		System.out.println(b.totalBoxes);
+		
+		System.out.println("end");
 	}
 
 }
