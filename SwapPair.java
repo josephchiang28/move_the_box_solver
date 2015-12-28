@@ -1,15 +1,19 @@
 
 public class SwapPair {
-
-	public Box box1;
-	public Box box2;
 	
-	public SwapPair(Box box1, Box box2) {
-		this.box1 = box1;
-		this.box2 = box2;
+	public int x1;
+	public int y1;
+	public int x2;
+	public int y2;
+	
+	public SwapPair(int x1, int y1, int x2, int y2) {
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
 	}
 	
 	public String toString() {
-		return String.format("%1$d%2$d%3$d%4$d", box1.x, box1.y, box2.x, box2.y);
+		return String.format("%1$d%2$d%3$d%4$d", x1, y1, x2, y2);
 	}
 }

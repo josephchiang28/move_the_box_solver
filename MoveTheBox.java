@@ -21,7 +21,7 @@ public class MoveTheBox {
 		ArrayList<ArrayList<SwapPair>> nextMoves;
 		for (SwapPair swapPair: possibleSwaps) {
 			Board boardNext = new Board(board);
-			boardNext.swapBoxes(swapPair.box1, swapPair.box2);
+			boardNext.swapBoxes(swapPair.x1, swapPair.y1, swapPair.x2, swapPair.y2);
 			boardNext.reachSteadyState();
 			if (boardNext.isComplete()) {
 				ArrayList<SwapPair> a = new ArrayList<SwapPair>();
@@ -72,13 +72,13 @@ public class MoveTheBox {
 		boolean allPass = true;
 		for (ArrayList<SwapPair> moves: solution) {
 			Board boardTest = new Board(board);
-			for (SwapPair swap: moves) {
+			for (SwapPair swapPair: moves) {
 				if (board.isComplete()) {
 					allPass = false;
 					System.out.print("Board completed with redundant moves: ");
 					System.out.println(moves);
 				}
-				boardTest.swapBoxes(swap.box1, swap.box2);
+				boardTest.swapBoxes(swapPair.x1, swapPair.y1, swapPair.x2, swapPair.y2);
 				boardTest.reachSteadyState();
 			}
 			if (!boardTest.isComplete()) {
@@ -97,12 +97,12 @@ public class MoveTheBox {
 		ArrayList<ArrayList<SwapPair>> solution;
 		
 		// Simple test, moves = 1
-//		board.setBoxType(0, 0, '1');
-//		board.setBoxType(1, 0, '2');
-//		board.setBoxType(2, 0, '1');
-//		board.setBoxType(0, 1, '2');
-//		board.setBoxType(1, 1, '1');
-//		board.setBoxType(2, 1, '2');
+//		board.setBox(0, 0, '1');
+//		board.setBox(1, 0, '2');
+//		board.setBox(2, 0, '1');
+//		board.setBox(0, 1, '2');
+//		board.setBox(1, 1, '1');
+//		board.setBox(2, 1, '2');
 //		System.out.println(board.toString());
 //		startTime = System.currentTimeMillis();
 //		solution = mtb.solve(board, 1);
@@ -110,18 +110,18 @@ public class MoveTheBox {
 		// End simple test
 
 		// Hamburg lvl 3, moves = 1
-//		board.setBoxType(2, 0, '1');
-//		board.setBoxType(2, 1, '2');
-//		board.setBoxType(2, 2, '1');
-//		board.setBoxType(3, 0, '1');
-//		board.setBoxType(3, 1, '2');
-//		board.setBoxType(3, 2, '1');
-//		board.setBoxType(4, 0, '3');
-//		board.setBoxType(4, 1, '1');
-//		board.setBoxType(4, 2, '3');
-//		board.setBoxType(4, 3, '3');
-//		board.setBoxType(4, 4, '1');
-//		board.setBoxType(4, 5, '2');
+//		board.setBox(2, 0, '1');
+//		board.setBox(2, 1, '2');
+//		board.setBox(2, 2, '1');
+//		board.setBox(3, 0, '1');
+//		board.setBox(3, 1, '2');
+//		board.setBox(3, 2, '1');
+//		board.setBox(4, 0, '3');
+//		board.setBox(4, 1, '1');
+//		board.setBox(4, 2, '3');
+//		board.setBox(4, 3, '3');
+//		board.setBox(4, 4, '1');
+//		board.setBox(4, 5, '2');
 //		System.out.println(board.toString());
 //		startTime = System.currentTimeMillis();
 //		solution = mtb.solve(board, 1);
@@ -129,18 +129,18 @@ public class MoveTheBox {
 		// End Hamburg lvl 3
 
 		// Hamburg lvl 6, moves = 2
-//		board.setBoxType(2, 0, '1');
-//		board.setBoxType(3, 0, '2');
-//		board.setBoxType(3, 1, '3');
-//		board.setBoxType(3, 2, '1');
-//		board.setBoxType(3, 3, '2');
-//		board.setBoxType(4, 0, '2');
-//		board.setBoxType(4, 1, '3');
-//		board.setBoxType(4, 2, '1');
-//		board.setBoxType(4, 3, '4');
-//		board.setBoxType(5, 0, '3');
-//		board.setBoxType(5, 1, '4');
-//		board.setBoxType(6, 0, '4');
+//		board.setBox(2, 0, '1');
+//		board.setBox(3, 0, '2');
+//		board.setBox(3, 1, '3');
+//		board.setBox(3, 2, '1');
+//		board.setBox(3, 3, '2');
+//		board.setBox(4, 0, '2');
+//		board.setBox(4, 1, '3');
+//		board.setBox(4, 2, '1');
+//		board.setBox(4, 3, '4');
+//		board.setBox(5, 0, '3');
+//		board.setBox(5, 1, '4');
+//		board.setBox(6, 0, '4');
 //		System.out.println(board.toString());
 //		startTime = System.currentTimeMillis();
 //		solution = mtb.solve(board, 2);
@@ -148,25 +148,25 @@ public class MoveTheBox {
 		// End Hamburg lvl 6
 
 		// Hamburg lvl 17, moves = 3
-//		board.setBoxType(0, 0, '1');
-//		board.setBoxType(1, 0, '1');
-//		board.setBoxType(1, 1, '2');
-//		board.setBoxType(2, 0, '3');
-//		board.setBoxType(2, 1, '2');
-//		board.setBoxType(2, 2, '1');
-//		board.setBoxType(2, 3, '3');
-//		board.setBoxType(2, 4, '2');
-//		board.setBoxType(3, 0, '1');
-//		board.setBoxType(3, 1, '3');
-//		board.setBoxType(3, 2, '4');
-//		board.setBoxType(3, 3, '1');
-//		board.setBoxType(3, 4, '2');
-//		board.setBoxType(4, 0, '4');
-//		board.setBoxType(4, 1, '1');
-//		board.setBoxType(4, 2, '2');
-//		board.setBoxType(5, 0, '4');
-//		board.setBoxType(5, 1, '2');
-//		board.setBoxType(5, 2, '1');
+//		board.setBox(0, 0, '1');
+//		board.setBox(1, 0, '1');
+//		board.setBox(1, 1, '2');
+//		board.setBox(2, 0, '3');
+//		board.setBox(2, 1, '2');
+//		board.setBox(2, 2, '1');
+//		board.setBox(2, 3, '3');
+//		board.setBox(2, 4, '2');
+//		board.setBox(3, 0, '1');
+//		board.setBox(3, 1, '3');
+//		board.setBox(3, 2, '4');
+//		board.setBox(3, 3, '1');
+//		board.setBox(3, 4, '2');
+//		board.setBox(4, 0, '4');
+//		board.setBox(4, 1, '1');
+//		board.setBox(4, 2, '2');
+//		board.setBox(5, 0, '4');
+//		board.setBox(5, 1, '2');
+//		board.setBox(5, 2, '1');
 //		System.out.println(board.toString());
 //		startTime = System.currentTimeMillis();
 //		solution = mtb.solve(board, 3);
@@ -174,22 +174,22 @@ public class MoveTheBox {
 		// End Hamburg lvl 17
 		 
 		// Hamburg lvl 24, moves = 4
-//		board.setBoxType(2, 0, '1');
-//		board.setBoxType(2, 1, '1');
-//		board.setBoxType(2, 2, '2');
-//		board.setBoxType(2, 3, '3');
-//		board.setBoxType(3, 0, '3');
-//		board.setBoxType(3, 1, '1');
-//		board.setBoxType(3, 2, '2');
-//		board.setBoxType(3, 3, '1');
-//		board.setBoxType(3, 4, '3');
-//		board.setBoxType(3, 5, '2');
-//		board.setBoxType(4, 0, '3');
-//		board.setBoxType(4, 1, '4');
-//		board.setBoxType(4, 2, '1');
-//		board.setBoxType(5, 0, '4');
-//		board.setBoxType(5, 1, '1');
-//		board.setBoxType(6, 0, '4');
+//		board.setBox(2, 0, '1');
+//		board.setBox(2, 1, '1');
+//		board.setBox(2, 2, '2');
+//		board.setBox(2, 3, '3');
+//		board.setBox(3, 0, '3');
+//		board.setBox(3, 1, '1');
+//		board.setBox(3, 2, '2');
+//		board.setBox(3, 3, '1');
+//		board.setBox(3, 4, '3');
+//		board.setBox(3, 5, '2');
+//		board.setBox(4, 0, '3');
+//		board.setBox(4, 1, '4');
+//		board.setBox(4, 2, '1');
+//		board.setBox(5, 0, '4');
+//		board.setBox(5, 1, '1');
+//		board.setBox(6, 0, '4');
 //		System.out.println(board.toString());
 //		startTime = System.currentTimeMillis();
 //		solution = mtb.solve(board, 4);
@@ -197,21 +197,21 @@ public class MoveTheBox {
 		// End Hamburg lvl 24
 		
 		// Start Paris lvl 24, moves = 4
-		board.setBoxType(0, 0, '1');
-		board.setBoxType(2, 0, '1');
-		board.setBoxType(2, 1, '2');
-		board.setBoxType(2, 2, '1');
-		board.setBoxType(2, 3, '3');
-		board.setBoxType(2, 4, '1');
-		board.setBoxType(3, 0, '2');
-		board.setBoxType(3, 1, '3');
-		board.setBoxType(3, 2, '3');
-		board.setBoxType(3, 3, '4');
-		board.setBoxType(4, 0, '4');
-		board.setBoxType(4, 1, '1');
-		board.setBoxType(4, 2, '2');
-		board.setBoxType(4, 3, '1');
-		board.setBoxType(4, 4, '4');
+		board.setBox(0, 0, '1');
+		board.setBox(2, 0, '1');
+		board.setBox(2, 1, '2');
+		board.setBox(2, 2, '1');
+		board.setBox(2, 3, '3');
+		board.setBox(2, 4, '1');
+		board.setBox(3, 0, '2');
+		board.setBox(3, 1, '3');
+		board.setBox(3, 2, '3');
+		board.setBox(3, 3, '4');
+		board.setBox(4, 0, '4');
+		board.setBox(4, 1, '1');
+		board.setBox(4, 2, '2');
+		board.setBox(4, 3, '1');
+		board.setBox(4, 4, '4');
 		System.out.println(board.toString());
 		startTime = System.currentTimeMillis();
 		solution = mtb.solve(board, 4);

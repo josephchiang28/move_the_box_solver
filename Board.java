@@ -5,29 +5,29 @@ public class Board {
 	public static final int WIDTH = 7;
 	public static final int HEIGHT = 9;
 	private int totalBoxes;
-	private Box[][] grid;
+	private char[][] grid;
 		   
 	public Board() {
 		totalBoxes = 0;
-		grid = new Box[WIDTH][HEIGHT];
+		grid = new char[WIDTH][HEIGHT];
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y ++) {
-				grid[x][y] = new Box(x, y, '0');
+				grid[x][y] = '0';
 			}
 		}
 	}
 	
 	public Board(Board oldBoard) {
 		totalBoxes = oldBoard.totalBoxes;
-		grid = new Box[WIDTH][HEIGHT];
+		grid = new char[WIDTH][HEIGHT];
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y++) {
-				grid[x][y] = new Box(x, y, oldBoard.getBox(x, y).type);
+				grid[x][y] = oldBoard.getBox(x, y);
 			}
 		}
 	}
 	
-	public Box[][] getGrid() {
+	public char[][] getGrid() {
 		return grid;
 	}
 	
@@ -35,36 +35,30 @@ public class Board {
 		return totalBoxes;
 	}
 	
-	public Box getBox(int x, int y) {
+	public char getBox(int x, int y) {
 		try {
 			return grid[x][y];
 		} catch (IndexOutOfBoundsException e) {
-			return null;
+			return '!';
 		}
 	}
 	
-	public void setBoxType(int x, int y, char type) {
-		Box box = getBox(x, y);
-		if (box.type == type) {
+	public void setBox(int x, int y, char type) {
+		char box = getBox(x, y);
+		if (box == '!' || box == type) {
 			return;
-		} else if (box.isEmpty() && type != '0') {
+		} else if (box == '0' && type != '0') {
 			totalBoxes++;
-		} else if (!box.isEmpty() && type == '0') {
+		} else if (box != '0' && type == '0') {
 			totalBoxes--;
 		}
-		box.type = type;
+		grid[x][y] = type;
 	}
 	
-	public void swapBoxes(Box box1, Box box2) {
-		char box1Type = box1.type;
-		setBoxType(box1.x, box1.y, box2.type);
-		setBoxType(box2.x, box2.y, box1Type);
-	}
-	
-	public void swapBoxTypes(int x1, int y1, int x2, int y2) {
-		char box1Type = getBox(x1, y1).type;
-		setBoxType(x1, y1, getBox(x2, y2).type);
-		setBoxType(x2, y2, box1Type);
+	public void swapBoxes(int x1, int y1, int x2, int y2) {
+		char box1Type = getBox(x1, y1);
+		setBox(x1, y1, getBox(x2, y2));
+		setBox(x2, y2, box1Type);
 	}
 	
 	public boolean isComplete() {
@@ -75,7 +69,7 @@ public class Board {
 		StringBuffer sequence = new StringBuffer("");
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y++) {
-				sequence.append(getBox(x, y).type);
+				sequence.append(getBox(x, y));
 			}
 		}
 		return sequence.toString();
@@ -85,16 +79,16 @@ public class Board {
 		ArrayList<SwapPair> possibleSwaps = new ArrayList<SwapPair>();
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y++) {
-				Box boxCenter = getBox(x, y);
-				Box boxEast = getBox(x + 1, y);
-				Box boxNorth = getBox(x, y + 1);
-				if (boxEast != null && boxCenter.type != boxEast.type) {
+				char boxCenter = getBox(x, y);
+				char boxEast = getBox(x + 1, y);
+				char boxNorth = getBox(x, y + 1);
+				if (boxEast != '!' && boxCenter != boxEast) {
 					// Add horizontal swaps
-					possibleSwaps.add(new SwapPair(boxCenter, boxEast));
+					possibleSwaps.add(new SwapPair(x, y, x + 1, y));
 				}
-				if (boxNorth != null && boxCenter.type != boxNorth.type) {
+				if (boxNorth != '!' && boxCenter != boxNorth) {
 					// Add vertical swaps
-					possibleSwaps.add(new SwapPair(boxCenter, boxNorth));
+					possibleSwaps.add(new SwapPair(x, y, x, y + 1));
 				}
 			}
 		}
@@ -109,9 +103,9 @@ public class Board {
 			for (int x = 0; x < WIDTH; x++) {
 				int bottom = 0;
 				for (int y = 0; y < HEIGHT; y++) {
-					if (!getBox(x, y).isEmpty()) {
+					if (getBox(x, y) != '0') {
 						if (y > bottom) {
-							swapBoxTypes(x, bottom, x, y);
+							swapBoxes(x, bottom, x, y);
 						}
 						bottom++;
 					}
@@ -124,19 +118,19 @@ public class Board {
 			// Find consecutive vertical boxes to pop
 			for (int x = 0; x < WIDTH; x++) {
 				for (int y = 0; y < HEIGHT; y++) {
-					Box boxStart = getBox(x, y);
-					if (boxStart.isEmpty()) {
+					char boxStart = getBox(x, y);
+					if (boxStart == '0') {
 						continue;
 					}
 					int yNext = y;
-					Box boxNext = null;
+					char boxNext;
 					do {
 						boxNext = getBox(x, ++yNext);
-					} while (boxNext != null && boxStart.type == boxNext.type);
+					} while (boxNext != '!' && boxStart == boxNext);
 					if (yNext - y >= 3) {
 						isBoardChanged = true;
 						for (int i = y; i < yNext; i++) {
-							boardNext.setBoxType(x, i, '0');
+							boardNext.setBox(x, i, '0');
 						}
 					}
 					y = yNext - 1;
@@ -145,19 +139,19 @@ public class Board {
 			// Find consecutive horizontal boxes to pop
 			for (int y = 0; y < HEIGHT; y++) {
 				for (int x = 0; x < WIDTH; x++) {
-					Box boxStart = getBox(x, y);
-					if (boxStart.isEmpty()) {
+					char boxStart = getBox(x, y);
+					if (boxStart == '0') {
 						continue;
 					}
 					int xNext = x;
-					Box boxNext = null;
+					char boxNext;
 					do {
 						boxNext = getBox(++xNext, y);
-					} while (boxNext != null && boxStart.type == boxNext.type);
+					} while (boxNext != '!' && boxStart == boxNext);
 					if (xNext - x >= 3) {
 						for (int i = x; i < xNext; i++) {
 							isBoardChanged = true;
-							boardNext.setBoxType(i, y, '0');
+							boardNext.setBox(i, y, '0');
 						}
 					}
 					x = xNext - 1;
@@ -174,7 +168,7 @@ public class Board {
 		for (int i = HEIGHT - 1; i >= 0; i--) {
 			s.append("|");
 			for (int j = 0; j < WIDTH; j++) {
-				s.append(getBox(j, i).type + "|");
+				s.append(getBox(j, i) + "|");
 			}
 			if (i != 0) {
 				s.append("\n|-+-+-+-+-+-+-|\n");
@@ -186,15 +180,15 @@ public class Board {
 	
 	public static void main(String[] args) {
 		Board b = new Board();
-		b.setBoxType(2, 0, '1');
-		b.setBoxType(3, 0, '2');
-		b.setBoxType(4, 0, '2');
-		b.setBoxType(2, 1, '1');
-		b.setBoxType(3, 1, '2');
-		b.setBoxType(4, 1, '2');
-		b.setBoxType(2, 2, '1');
-		b.setBoxType(3, 2, '1');
-		b.setBoxType(4, 2, '1');
+		b.setBox(2, 0, '1');
+		b.setBox(3, 0, '2');
+		b.setBox(4, 0, '2');
+		b.setBox(2, 1, '1');
+		b.setBox(3, 1, '2');
+		b.setBox(4, 1, '2');
+		b.setBox(2, 2, '1');
+		b.setBox(3, 2, '1');
+		b.setBox(4, 2, '1');
 		System.out.println(b.toString());
 		System.out.println(b.totalBoxes);
 		b.reachSteadyState();
