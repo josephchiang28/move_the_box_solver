@@ -119,14 +119,14 @@ public class Board {
 			for (int x = 0; x < WIDTH; x++) {
 				for (int y = 0; y < HEIGHT; y++) {
 					char boxStart = getBox(x, y);
-					if (boxStart == '0') {
+					if (boxStart == '0' || boxStart == '!') {
 						continue;
 					}
 					int yNext = y;
 					char boxNext;
 					do {
 						boxNext = getBox(x, ++yNext);
-					} while (boxNext != '!' && boxStart == boxNext);
+					} while (boxStart == boxNext);
 					if (yNext - y >= 3) {
 						isBoardChanged = true;
 						for (int i = y; i < yNext; i++) {
@@ -140,14 +140,14 @@ public class Board {
 			for (int y = 0; y < HEIGHT; y++) {
 				for (int x = 0; x < WIDTH; x++) {
 					char boxStart = getBox(x, y);
-					if (boxStart == '0') {
+					if (boxStart == '0' || boxStart == '!') {
 						continue;
 					}
 					int xNext = x;
 					char boxNext;
 					do {
 						boxNext = getBox(++xNext, y);
-					} while (boxNext != '!' && boxStart == boxNext);
+					} while (boxStart == boxNext);
 					if (xNext - x >= 3) {
 						for (int i = x; i < xNext; i++) {
 							isBoardChanged = true;
