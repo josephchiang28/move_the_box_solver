@@ -88,11 +88,11 @@ public class Board {
 				Box boxCenter = getBox(x, y);
 				Box boxEast = getBox(x + 1, y);
 				Box boxNorth = getBox(x, y + 1);
-				if (boxEast != null && boxCenter.type != boxEast.type && !(boxCenter.isEmpty() && boxEast.isEmpty())) {
+				if (boxEast != null && boxCenter.type != boxEast.type) {
 					// Add horizontal swaps
 					possibleSwaps.add(new SwapPair(boxCenter, boxEast));
 				}
-				if (boxNorth != null && boxCenter.type != boxNorth.type && !(boxCenter.isEmpty() && boxNorth.isEmpty())) {
+				if (boxNorth != null && boxCenter.type != boxNorth.type) {
 					// Add vertical swaps
 					possibleSwaps.add(new SwapPair(boxCenter, boxNorth));
 				}
@@ -128,20 +128,18 @@ public class Board {
 					if (boxStart.isEmpty()) {
 						continue;
 					}
-					int count = 0;
-					int newY = y;
+					int yNext = y;
 					Box boxNext = null;
 					do {
-						count++;
-						boxNext = getBox(x, ++newY);
+						boxNext = getBox(x, ++yNext);
 					} while (boxNext != null && boxStart.type == boxNext.type);
-					if (count >= 3) {
+					if (yNext - y >= 3) {
 						isBoardChanged = true;
-						for (int i = y; i < y + count; i++) {
+						for (int i = y; i < yNext; i++) {
 							boardNext.setBoxType(x, i, '0');
 						}
 					}
-					y += count - 1;
+					y = yNext - 1;
 				}
 			}
 			// Find consecutive horizontal boxes to pop
@@ -151,20 +149,18 @@ public class Board {
 					if (boxStart.isEmpty()) {
 						continue;
 					}
-					int count = 0;
-					int newX = x;
+					int xNext = x;
 					Box boxNext = null;
 					do {
-						count++;
-						boxNext = getBox(++newX, y);
+						boxNext = getBox(++xNext, y);
 					} while (boxNext != null && boxStart.type == boxNext.type);
-					if (count >= 3) {
-						for (int i = x; i < x + count; i++) {
+					if (xNext - x >= 3) {
+						for (int i = x; i < xNext; i++) {
 							isBoardChanged = true;
 							boardNext.setBoxType(i, y, '0');
 						}
 					}
-					y += count - 1;
+					x = xNext - 1;
 				}
 			}
 			// Copy Grid
