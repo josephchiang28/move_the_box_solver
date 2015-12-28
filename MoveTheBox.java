@@ -1,26 +1,22 @@
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.TreeSet;
 
 public class MoveTheBox {
 	
-	private HashSet<String> impossibleBoardSequence = new HashSet<String>();
+	private HashMap<String, Integer> unsolvableBoardSequences;
+	
+	public MoveTheBox() {
+		unsolvableBoardSequences = new HashMap<String, Integer>();
+	}
 	
 	public ArrayList<ArrayList<SwapPair>> solve(Board board, int movesLeft) {
 		ArrayList<ArrayList<SwapPair>> curMoves = new ArrayList<ArrayList<SwapPair>>();
 		String boardSequence = board.getBoardSequence();
-		if (movesLeft <= 0 || board.getTotalBoxes() < 3) {
-//			System.out.println("Add impossible board");
-//			System.out.println(boardSequence);
-//			System.out.println(movesLeft);
-//			impossibleBoardSequence.add(boardSequence);
+		if (movesLeft <= 0 || board.getTotalBoxes() < 3
+				|| (unsolvableBoardSequences.containsKey(boardSequence) && movesLeft <= unsolvableBoardSequences.get(boardSequence))) {
 			return curMoves;
 		}
-//		if (impossibleBoardSequence.contains(boardSequence)) {
-//			System.out.println("Reached impossible board");
-//			System.out.println(boardSequence);
-//			return curMoves;
-//		}
 		ArrayList<SwapPair> possibleSwaps = board.generateSwaps();
 		ArrayList<ArrayList<SwapPair>> nextMoves;
 		for (SwapPair swapPair: possibleSwaps) {
@@ -40,6 +36,9 @@ public class MoveTheBox {
 				}
 				curMoves.addAll(nextMoves);
 			}
+		}
+		if (curMoves.isEmpty()) {
+			unsolvableBoardSequences.put(boardSequence, movesLeft);
 		}
 		return curMoves;
 	}
@@ -191,6 +190,7 @@ public class MoveTheBox {
 		
 		System.out.println(solution.size());
 		System.out.println(solution);
+		System.out.println(mtb.unsolvableBoardSequences.size());
 		
 		System.out.println("Verify if all solution are distinct");
 		System.out.println(mtb.verifyDistinctMoves(solution));

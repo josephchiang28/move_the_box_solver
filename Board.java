@@ -175,9 +175,9 @@ public class Board {
 	
 	public String toString() {
 		String s = "+-------------+\n";
-		for (int i=8; i>=0; i--) {
+		for (int i = HEIGHT - 1; i >= 0; i--) {
 			s += "|";
-			for (int j=0; j<7; j++) {
+			for (int j = 0; j < WIDTH; j++) {
 				s += getBox(j, i).type + "|";
 			}
 			if (i != 0) {
