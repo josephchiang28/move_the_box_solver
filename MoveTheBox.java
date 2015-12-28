@@ -8,7 +8,7 @@ public class MoveTheBox {
 	
 	public ArrayList<ArrayList<SwapPair>> solve(Board board, int movesLeft) {
 		ArrayList<ArrayList<SwapPair>> curMoves = new ArrayList<ArrayList<SwapPair>>();
-//		String boardSequence = board.getBoardSequence();
+		String boardSequence = board.getBoardSequence();
 		if (movesLeft <= 0 || board.getTotalBoxes() < 3) {
 //			System.out.println("Add impossible board");
 //			System.out.println(boardSequence);
@@ -166,22 +166,22 @@ public class MoveTheBox {
 //		End Hamburg lvl 17
 		 
 //		Hamburg lvl 24, moves = 4
-		board.setBoxType(2, 0, 1);
-		board.setBoxType(2, 1, 1);
-		board.setBoxType(2, 2, 2);
-		board.setBoxType(2, 3, 3);
-		board.setBoxType(3, 0, 3);
-		board.setBoxType(3, 1, 1);
-		board.setBoxType(3, 2, 2);
-		board.setBoxType(3, 3, 1);
-		board.setBoxType(3, 4, 3);
-		board.setBoxType(3, 5, 2);
-		board.setBoxType(4, 0, 3);
-		board.setBoxType(4, 1, 4);
-		board.setBoxType(4, 2, 1);
-		board.setBoxType(5, 0, 4);
-		board.setBoxType(5, 1, 1);
-		board.setBoxType(6, 0, 4);
+		board.setBoxType(2, 0, '1');
+		board.setBoxType(2, 1, '1');
+		board.setBoxType(2, 2, '2');
+		board.setBoxType(2, 3, '3');
+		board.setBoxType(3, 0, '3');
+		board.setBoxType(3, 1, '1');
+		board.setBoxType(3, 2, '2');
+		board.setBoxType(3, 3, '1');
+		board.setBoxType(3, 4, '3');
+		board.setBoxType(3, 5, '2');
+		board.setBoxType(4, 0, '3');
+		board.setBoxType(4, 1, '4');
+		board.setBoxType(4, 2, '1');
+		board.setBoxType(5, 0, '4');
+		board.setBoxType(5, 1, '1');
+		board.setBoxType(6, 0, '4');
 		System.out.println(board.toString());
 		long startTime = System.currentTimeMillis();
 		ArrayList<ArrayList<SwapPair>> solution = mtb.solve(board, 4);

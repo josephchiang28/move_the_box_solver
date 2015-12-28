@@ -12,7 +12,7 @@ public class Board {
 		grid = new Box[WIDTH][HEIGHT];
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y ++) {
-				grid[x][y] = new Box(x, y, 0);
+				grid[x][y] = new Box(x, y, '0');
 			}
 		}
 	}
@@ -43,26 +43,26 @@ public class Board {
 		}
 	}
 	
-	public void setBoxType(int x, int y, int type) {
+	public void setBoxType(int x, int y, char type) {
 		Box box = getBox(x, y);
 		if (box.type == type) {
 			return;
-		} else if (box.isEmpty() && type > 0) {
+		} else if (box.isEmpty() && type != '0') {
 			totalBoxes++;
-		} else if (!box.isEmpty() && type == 0) {
+		} else if (!box.isEmpty() && type == '0') {
 			totalBoxes--;
 		}
 		box.type = type;
 	}
 	
 	public void swapBoxes(Box box1, Box box2) {
-		int box1Type = box1.type;
+		char box1Type = box1.type;
 		setBoxType(box1.x, box1.y, box2.type);
 		setBoxType(box2.x, box2.y, box1Type);
 	}
 	
 	public void swapBoxTypes(int x1, int y1, int x2, int y2) {
-		int box1Type = getBox(x1, y1).type;
+		char box1Type = getBox(x1, y1).type;
 		setBoxType(x1, y1, getBox(x2, y2).type);
 		setBoxType(x2, y2, box1Type);
 	}
@@ -75,7 +75,7 @@ public class Board {
 		StringBuffer sequence = new StringBuffer("");
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y++) {
-				sequence.append(Integer.toString(getBox(x, y).type));
+				sequence.append(getBox(x, y).type);
 			}
 		}
 		return sequence.toString();
@@ -138,7 +138,7 @@ public class Board {
 					if (count >= 3) {
 						isBoardChanged = true;
 						for (int i = y; i < y + count; i++) {
-							boardNext.setBoxType(x, i, 0);
+							boardNext.setBoxType(x, i, '0');
 						}
 					}
 					y += count - 1;
@@ -161,7 +161,7 @@ public class Board {
 					if (count >= 3) {
 						for (int i = x; i < x + count; i++) {
 							isBoardChanged = true;
-							boardNext.setBoxType(i, y, 0);
+							boardNext.setBoxType(i, y, '0');
 						}
 					}
 					y += count - 1;
@@ -190,15 +190,15 @@ public class Board {
 	
 	public static void main(String[] args) {
 		Board b = new Board();
-		b.setBoxType(2, 0, 1);
-		b.setBoxType(3, 0, 2);
-		b.setBoxType(4, 0, 2);
-		b.setBoxType(2, 1, 1);
-		b.setBoxType(3, 1, 2);
-		b.setBoxType(4, 1, 2);
-		b.setBoxType(2, 2, 1);
-		b.setBoxType(3, 2, 1);
-		b.setBoxType(4, 2, 1);
+//		b.setBoxType(2, 0, 1);
+//		b.setBoxType(3, 0, 2);
+//		b.setBoxType(4, 0, 2);
+//		b.setBoxType(2, 1, 1);
+//		b.setBoxType(3, 1, 2);
+//		b.setBoxType(4, 1, 2);
+//		b.setBoxType(2, 2, 1);
+//		b.setBoxType(3, 2, 1);
+//		b.setBoxType(4, 2, 1);
 		System.out.println(b.toString());
 		System.out.println(b.totalBoxes);
 		b.reachSteadyState();
