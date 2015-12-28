@@ -27,6 +27,10 @@ public class Board {
 		}
 	}
 	
+	public Box[][] getGrid() {
+		return grid;
+	}
+	
 	public int getTotalBoxes() {
 		return totalBoxes;
 	}
@@ -65,6 +69,17 @@ public class Board {
 	
 	public boolean isComplete() {
 		return totalBoxes == 0;
+	}
+	
+	// TODO: USE A STREAM
+	public String getBoardSequence() {
+		String sequence = "";
+		for (int x = 0; x < WIDTH; x++) {
+			for (int y = 0; y < HEIGHT; y++) {
+				sequence += Integer.toString(getBox(x, y).type);
+			}
+		}
+		return sequence;
 	}
 	
 	public ArrayList<SwapPair> generateSwaps() {

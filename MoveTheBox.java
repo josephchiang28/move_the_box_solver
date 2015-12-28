@@ -1,13 +1,26 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.TreeSet;
 
 public class MoveTheBox {
 	
+	private HashSet<String> impossibleBoardSequence = new HashSet<String>();
+	
 	public ArrayList<ArrayList<SwapPair>> solve(Board board, int movesLeft) {
 		ArrayList<ArrayList<SwapPair>> curMoves = new ArrayList<ArrayList<SwapPair>>();
+//		String boardSequence = board.getBoardSequence();
 		if (movesLeft <= 0 || board.getTotalBoxes() < 3) {
+//			System.out.println("Add impossible board");
+//			System.out.println(boardSequence);
+//			System.out.println(movesLeft);
+//			impossibleBoardSequence.add(boardSequence);
 			return curMoves;
 		}
+//		if (impossibleBoardSequence.contains(boardSequence)) {
+//			System.out.println("Reached impossible board");
+//			System.out.println(boardSequence);
+//			return curMoves;
+//		}
 		ArrayList<SwapPair> possibleSwaps = board.generateSwaps();
 		ArrayList<ArrayList<SwapPair>> nextMoves;
 		for (SwapPair swapPair: possibleSwaps) {
@@ -31,9 +44,13 @@ public class MoveTheBox {
 		return curMoves;
 	}
 	
-	public boolean verifyDistinctMoves(ArrayList<ArrayList<SwapPair>> allMoves) {
+	public boolean verifyDistinctMoves(ArrayList<ArrayList<SwapPair>> solution) {
+		if (solution.isEmpty()) {
+			System.out.println("Error: Empty Solution");
+			return false;
+		}
 		TreeSet<String> distinctMoves = new TreeSet<String>();
-		for (ArrayList<SwapPair> moves: allMoves) {
+		for (ArrayList<SwapPair> moves: solution) {
 			String movesString = "";
 			for (SwapPair swapPair: moves) {
 				movesString += swapPair.toString();
@@ -50,6 +67,10 @@ public class MoveTheBox {
 	}
 	
 	public boolean verifySolution(Board board, ArrayList<ArrayList<SwapPair>> solution) {
+		if (solution.isEmpty()) {
+			System.out.println("Error: Empty Solution");
+			return false;
+		}
 		boolean allPass = true;
 		for (ArrayList<SwapPair> moves: solution) {
 			Board boardTest = new Board(board);
