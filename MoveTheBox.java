@@ -52,8 +52,7 @@ public class MoveTheBox {
 		for (ArrayList<SwapPair> moves: solution) {
 			String movesString = "";
 			for (SwapPair swapPair: moves) {
-				movesString += swapPair.toString();
-				movesString += " ";
+				movesString += swapPair.toString() + " ";
 			}
 			if (distinctMoves.contains(movesString)) {
 				return false;
@@ -94,104 +93,134 @@ public class MoveTheBox {
 	public static void main(String[] args) {
 		MoveTheBox mtb = new MoveTheBox();
 		Board board = new Board();
+		long startTime, endTime;
+		ArrayList<ArrayList<SwapPair>> solution;
 		
-//		Simple test, moves = 1
-//		board.setBoxType(0, 0, 1);
-//		board.setBoxType(1, 0, 2);
-//		board.setBoxType(2, 0, 1);
-//		board.setBoxType(0, 1, 2);
-//		board.setBoxType(1, 1, 1);
-//		board.setBoxType(2, 1, 2);
+		// Simple test, moves = 1
+//		board.setBoxType(0, 0, '1');
+//		board.setBoxType(1, 0, '2');
+//		board.setBoxType(2, 0, '1');
+//		board.setBoxType(0, 1, '2');
+//		board.setBoxType(1, 1, '1');
+//		board.setBoxType(2, 1, '2');
 //		System.out.println(board.toString());
-//		ArrayList<ArrayList<SwapPair>> solution = mtb.solve(board, 1);
-//		End simple test
+//		startTime = System.currentTimeMillis();
+//		solution = mtb.solve(board, 1);
+//		endTime = System.currentTimeMillis();
+		// End simple test
 
-//		Hamburg lvl 3, moves = 1
-//		board.setBoxType(2, 0, 1);
-//		board.setBoxType(2, 1, 2);
-//		board.setBoxType(2, 2, 1);
-//		board.setBoxType(3, 0, 1);
-//		board.setBoxType(3, 1, 2);
-//		board.setBoxType(3, 2, 1);
-//		board.setBoxType(4, 0, 3);
-//		board.setBoxType(4, 1, 1);
-//		board.setBoxType(4, 2, 3);
-//		board.setBoxType(4, 3, 3);
-//		board.setBoxType(4, 4, 1);
-//		board.setBoxType(4, 5, 2);
+		// Hamburg lvl 3, moves = 1
+//		board.setBoxType(2, 0, '1');
+//		board.setBoxType(2, 1, '2');
+//		board.setBoxType(2, 2, '1');
+//		board.setBoxType(3, 0, '1');
+//		board.setBoxType(3, 1, '2');
+//		board.setBoxType(3, 2, '1');
+//		board.setBoxType(4, 0, '3');
+//		board.setBoxType(4, 1, '1');
+//		board.setBoxType(4, 2, '3');
+//		board.setBoxType(4, 3, '3');
+//		board.setBoxType(4, 4, '1');
+//		board.setBoxType(4, 5, '2');
 //		System.out.println(board.toString());
-//		ArrayList<ArrayList<SwapPair>> solution = mtb.solve(board, 1);
-//		End Hamburg lvl 3
+//		startTime = System.currentTimeMillis();
+//		solution = mtb.solve(board, 1);
+//		endTime = System.currentTimeMillis();
+		// End Hamburg lvl 3
 
-//		Hamburg lvl 6, moves = 2
-//		board.setBoxType(2, 0, 1);
-//		board.setBoxType(3, 0, 2);
-//		board.setBoxType(3, 1, 3);
-//		board.setBoxType(3, 2, 1);
-//		board.setBoxType(3, 3, 2);
-//		board.setBoxType(4, 0, 2);
-//		board.setBoxType(4, 1, 3);
-//		board.setBoxType(4, 2, 1);
-//		board.setBoxType(4, 3, 4);
-//		board.setBoxType(5, 0, 3);
-//		board.setBoxType(5, 1, 4);
-//		board.setBoxType(6, 0, 4);
+		// Hamburg lvl 6, moves = 2
+//		board.setBoxType(2, 0, '1');
+//		board.setBoxType(3, 0, '2');
+//		board.setBoxType(3, 1, '3');
+//		board.setBoxType(3, 2, '1');
+//		board.setBoxType(3, 3, '2');
+//		board.setBoxType(4, 0, '2');
+//		board.setBoxType(4, 1, '3');
+//		board.setBoxType(4, 2, '1');
+//		board.setBoxType(4, 3, '4');
+//		board.setBoxType(5, 0, '3');
+//		board.setBoxType(5, 1, '4');
+//		board.setBoxType(6, 0, '4');
 //		System.out.println(board.toString());
-//		ArrayList<ArrayList<SwapPair>> solution = mtb.solve(board, 2);
-//		End Hamburg lvl 6
+//		startTime = System.currentTimeMillis();
+//		solution = mtb.solve(board, 2);
+//		endTime = System.currentTimeMillis();
+		// End Hamburg lvl 6
 
-//		Hamburg lvl 17, moves = 3
-//		board.setBoxType(0, 0, 1);
-//		board.setBoxType(1, 0, 1);
-//		board.setBoxType(1, 1, 2);
-//		board.setBoxType(2, 0, 3);
-//		board.setBoxType(2, 1, 2);
-//		board.setBoxType(2, 2, 1);
-//		board.setBoxType(2, 3, 3);
-//		board.setBoxType(2, 4, 2);
-//		board.setBoxType(3, 0, 1);
-//		board.setBoxType(3, 1, 3);
-//		board.setBoxType(3, 2, 4);
-//		board.setBoxType(3, 3, 1);
-//		board.setBoxType(3, 4, 2);
-//		board.setBoxType(4, 0, 4);
-//		board.setBoxType(4, 1, 1);
-//		board.setBoxType(4, 2, 2);
-//		board.setBoxType(5, 0, 4);
-//		board.setBoxType(5, 1, 2);
-//		board.setBoxType(5, 2, 1);
+		// Hamburg lvl 17, moves = 3
+//		board.setBoxType(0, 0, '1');
+//		board.setBoxType(1, 0, '1');
+//		board.setBoxType(1, 1, '2');
+//		board.setBoxType(2, 0, '3');
+//		board.setBoxType(2, 1, '2');
+//		board.setBoxType(2, 2, '1');
+//		board.setBoxType(2, 3, '3');
+//		board.setBoxType(2, 4, '2');
+//		board.setBoxType(3, 0, '1');
+//		board.setBoxType(3, 1, '3');
+//		board.setBoxType(3, 2, '4');
+//		board.setBoxType(3, 3, '1');
+//		board.setBoxType(3, 4, '2');
+//		board.setBoxType(4, 0, '4');
+//		board.setBoxType(4, 1, '1');
+//		board.setBoxType(4, 2, '2');
+//		board.setBoxType(5, 0, '4');
+//		board.setBoxType(5, 1, '2');
+//		board.setBoxType(5, 2, '1');
 //		System.out.println(board.toString());
-//		ArrayList<ArrayList<SwapPair>> solution = mtb.solve(board, 3);
-//		End Hamburg lvl 17
+//		startTime = System.currentTimeMillis();
+//		solution = mtb.solve(board, 3);
+//		endTime = System.currentTimeMillis();
+		// End Hamburg lvl 17
 		 
-//		Hamburg lvl 24, moves = 4
+		// Hamburg lvl 24, moves = 4
+//		board.setBoxType(2, 0, '1');
+//		board.setBoxType(2, 1, '1');
+//		board.setBoxType(2, 2, '2');
+//		board.setBoxType(2, 3, '3');
+//		board.setBoxType(3, 0, '3');
+//		board.setBoxType(3, 1, '1');
+//		board.setBoxType(3, 2, '2');
+//		board.setBoxType(3, 3, '1');
+//		board.setBoxType(3, 4, '3');
+//		board.setBoxType(3, 5, '2');
+//		board.setBoxType(4, 0, '3');
+//		board.setBoxType(4, 1, '4');
+//		board.setBoxType(4, 2, '1');
+//		board.setBoxType(5, 0, '4');
+//		board.setBoxType(5, 1, '1');
+//		board.setBoxType(6, 0, '4');
+//		System.out.println(board.toString());
+//		startTime = System.currentTimeMillis();
+//		solution = mtb.solve(board, 4);
+//		endTime = System.currentTimeMillis();
+		// End Hamburg lvl 24
+		
+		// Start Paris lvl 24, moves = 4
+		board.setBoxType(0, 0, '1');
 		board.setBoxType(2, 0, '1');
-		board.setBoxType(2, 1, '1');
-		board.setBoxType(2, 2, '2');
+		board.setBoxType(2, 1, '2');
+		board.setBoxType(2, 2, '1');
 		board.setBoxType(2, 3, '3');
-		board.setBoxType(3, 0, '3');
-		board.setBoxType(3, 1, '1');
-		board.setBoxType(3, 2, '2');
-		board.setBoxType(3, 3, '1');
-		board.setBoxType(3, 4, '3');
-		board.setBoxType(3, 5, '2');
-		board.setBoxType(4, 0, '3');
-		board.setBoxType(4, 1, '4');
-		board.setBoxType(4, 2, '1');
-		board.setBoxType(5, 0, '4');
-		board.setBoxType(5, 1, '1');
-		board.setBoxType(6, 0, '4');
+		board.setBoxType(2, 4, '1');
+		board.setBoxType(3, 0, '2');
+		board.setBoxType(3, 1, '3');
+		board.setBoxType(3, 2, '3');
+		board.setBoxType(3, 3, '4');
+		board.setBoxType(4, 0, '4');
+		board.setBoxType(4, 1, '1');
+		board.setBoxType(4, 2, '2');
+		board.setBoxType(4, 3, '1');
+		board.setBoxType(4, 4, '4');
 		System.out.println(board.toString());
-		long startTime = System.currentTimeMillis();
-		ArrayList<ArrayList<SwapPair>> solution = mtb.solve(board, 4);
-		long endTime = System.currentTimeMillis();
+		startTime = System.currentTimeMillis();
+		solution = mtb.solve(board, 4);
+		endTime = System.currentTimeMillis();
+		// End Paris lvl 24
+		
 		System.out.println(String.format("Took %1$d milliseconds", endTime - startTime));
-//		End Hamburg lvl 24
-		
-		System.out.println(solution.size());
+		System.out.println(String.format("Solution size: %1$d", solution.size()));
 		System.out.println(solution);
-		System.out.println(mtb.unsolvableBoardSequences.size());
-		
 		System.out.println("Verify if all solution are distinct");
 		System.out.println(mtb.verifyDistinctMoves(solution));
 		System.out.println("Verify if solution actually solves");

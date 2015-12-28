@@ -190,21 +190,20 @@ public class Board {
 	
 	public static void main(String[] args) {
 		Board b = new Board();
-//		b.setBoxType(2, 0, 1);
-//		b.setBoxType(3, 0, 2);
-//		b.setBoxType(4, 0, 2);
-//		b.setBoxType(2, 1, 1);
-//		b.setBoxType(3, 1, 2);
-//		b.setBoxType(4, 1, 2);
-//		b.setBoxType(2, 2, 1);
-//		b.setBoxType(3, 2, 1);
-//		b.setBoxType(4, 2, 1);
+		b.setBoxType(2, 0, '1');
+		b.setBoxType(3, 0, '2');
+		b.setBoxType(4, 0, '2');
+		b.setBoxType(2, 1, '1');
+		b.setBoxType(3, 1, '2');
+		b.setBoxType(4, 1, '2');
+		b.setBoxType(2, 2, '1');
+		b.setBoxType(3, 2, '1');
+		b.setBoxType(4, 2, '1');
 		System.out.println(b.toString());
 		System.out.println(b.totalBoxes);
 		b.reachSteadyState();
 		System.out.println(b.toString());
 		System.out.println(b.totalBoxes);
-		
 		System.out.println("end");
 	}
 
