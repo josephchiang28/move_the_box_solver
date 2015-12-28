@@ -71,15 +71,14 @@ public class Board {
 		return totalBoxes == 0;
 	}
 	
-	// TODO: USE A STREAM
 	public String getBoardSequence() {
-		String sequence = "";
+		StringBuffer sequence = new StringBuffer("");
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y++) {
-				sequence += Integer.toString(getBox(x, y).type);
+				sequence.append(Integer.toString(getBox(x, y).type));
 			}
 		}
-		return sequence;
+		return sequence.toString();
 	}
 	
 	public ArrayList<SwapPair> generateSwaps() {
