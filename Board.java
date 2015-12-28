@@ -170,18 +170,18 @@ public class Board {
 	}
 	
 	public String toString() {
-		String s = "+-------------+\n";
+		StringBuffer s = new StringBuffer("+-------------+\n");
 		for (int i = HEIGHT - 1; i >= 0; i--) {
-			s += "|";
+			s.append("|");
 			for (int j = 0; j < WIDTH; j++) {
-				s += getBox(j, i).type + "|";
+				s.append(getBox(j, i).type + "|");
 			}
 			if (i != 0) {
-				s += "\n|-+-+-+-+-+-+-|\n";
+				s.append("\n|-+-+-+-+-+-+-|\n");
 			}
 		}
-		s += "\n+-------------+";
-		return s;
+		s.append("\n+-------------+");
+		return s.toString();
 	}
 	
 	public static void main(String[] args) {
