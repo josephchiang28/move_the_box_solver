@@ -68,7 +68,7 @@ public class Board {
 	}
 	
 	public String getBoardSequence() {
-		StringBuffer sequence = new StringBuffer("");
+		StringBuffer sequence = new StringBuffer();
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y++) {
 				sequence.append(getBox(x, y));
