@@ -4,6 +4,8 @@ public class Board {
 
 	public static final int WIDTH = 7;
 	public static final int HEIGHT = 9;
+	public static final char BOX_EMPTY = '0';
+	public static final char BOX_INVALID = '!';
 	private int totalBoxes;
 	private char[][] grid;
 		   
@@ -12,7 +14,7 @@ public class Board {
 		grid = new char[WIDTH][HEIGHT];
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y ++) {
-				grid[x][y] = '0';
+				grid[x][y] = BOX_EMPTY;
 			}
 		}
 	}
@@ -39,17 +41,17 @@ public class Board {
 		try {
 			return grid[x][y];
 		} catch (IndexOutOfBoundsException e) {
-			return '!';
+			return BOX_INVALID;
 		}
 	}
 	
 	public void setBox(int x, int y, char type) {
 		char box = getBox(x, y);
-		if (box == '!' || box == type) {
+		if (box == type || box == BOX_INVALID || type == BOX_INVALID) {
 			return;
-		} else if (box == '0' && type != '0') {
+		} else if (box == BOX_EMPTY && type != BOX_EMPTY) {
 			totalBoxes++;
-		} else if (box != '0' && type == '0') {
+		} else if (box != BOX_EMPTY && type == BOX_EMPTY) {
 			totalBoxes--;
 		}
 		grid[x][y] = type;
@@ -82,11 +84,11 @@ public class Board {
 				char boxCenter = getBox(x, y);
 				char boxEast = getBox(x + 1, y);
 				char boxNorth = getBox(x, y + 1);
-				if (boxEast != '!' && boxCenter != boxEast) {
+				if (boxEast != BOX_INVALID && boxCenter != boxEast) {
 					// Add horizontal swaps
 					possibleSwaps.add(new SwapPair(x, y, x + 1, y));
 				}
-				if (boxNorth != '!' && boxCenter != boxNorth) {
+				if (boxNorth != BOX_INVALID && boxCenter != boxNorth) {
 					// Add vertical swaps
 					possibleSwaps.add(new SwapPair(x, y, x, y + 1));
 				}
@@ -103,7 +105,7 @@ public class Board {
 			for (int x = 0; x < WIDTH; x++) {
 				int bottom = 0;
 				for (int y = 0; y < HEIGHT; y++) {
-					if (getBox(x, y) != '0') {
+					if (getBox(x, y) != BOX_EMPTY) {
 						if (y > bottom) {
 							swapBoxes(x, bottom, x, y);
 						}
@@ -119,7 +121,7 @@ public class Board {
 			for (int x = 0; x < WIDTH; x++) {
 				for (int y = 0; y < HEIGHT; y++) {
 					char boxStart = getBox(x, y);
-					if (boxStart == '0' || boxStart == '!') {
+					if (boxStart == BOX_EMPTY || boxStart == BOX_INVALID) {
 						continue;
 					}
 					int yNext = y;
@@ -130,7 +132,7 @@ public class Board {
 					if (yNext - y >= 3) {
 						isBoardChanged = true;
 						for (int i = y; i < yNext; i++) {
-							boardNext.setBox(x, i, '0');
+							boardNext.setBox(x, i, BOX_EMPTY);
 						}
 					}
 					y = yNext - 1;
@@ -140,7 +142,7 @@ public class Board {
 			for (int y = 0; y < HEIGHT; y++) {
 				for (int x = 0; x < WIDTH; x++) {
 					char boxStart = getBox(x, y);
-					if (boxStart == '0' || boxStart == '!') {
+					if (boxStart == BOX_EMPTY || boxStart == BOX_INVALID) {
 						continue;
 					}
 					int xNext = x;
@@ -151,7 +153,7 @@ public class Board {
 					if (xNext - x >= 3) {
 						for (int i = x; i < xNext; i++) {
 							isBoardChanged = true;
-							boardNext.setBox(i, y, '0');
+							boardNext.setBox(i, y, BOX_EMPTY);
 						}
 					}
 					x = xNext - 1;

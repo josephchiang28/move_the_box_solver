@@ -243,7 +243,7 @@ public class MoveTheBox {
 		System.out.println(String.format("Took %1$d milliseconds", endTime - startTime));
 		System.out.println(String.format("Solution size: %1$d", solution.size()));
 		System.out.println(solution);
-		System.out.println("Verify if all solution are distinct");
+		System.out.println("Verify if all solutions are distinct");
 		System.out.println(mtb.verifyDistinctMoves(solution));
 		System.out.println("Verify if solution actually solves");
 		System.out.println(mtb.verifySolution(board, solution));
