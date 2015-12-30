@@ -6,22 +6,23 @@ import java.util.TreeSet;
 public class MoveTheBox {
 
 	public int movesRequired;
-	private HashMap<String, Integer> unsolvableBoardSequences;
+	private HashMap<String, Integer> unsolvableBoards; // Key: unique board sequences, Value: moves left
 	
 	public MoveTheBox(int movesRequired) {
 		this.movesRequired = movesRequired;
-		unsolvableBoardSequences = new HashMap<String, Integer>();
+		unsolvableBoards = new HashMap<String, Integer>();
 	}
 	
-	public ArrayList<SwapPair[]> solve(Board board, int movesLeft) {
-		ArrayList<SwapPair[]> curMoves = new ArrayList<SwapPair[]>();
+	public ArrayList<SwapPair[]> solve(Board board, int movesLeft) {	
 		String boardSequence = board.getBoardSequence();
 		if (movesLeft <= 0 || board.getTotalBoxes() < 3
-				|| (unsolvableBoardSequences.containsKey(boardSequence) && movesLeft <= unsolvableBoardSequences.get(boardSequence))) {
-			return curMoves;
+				|| (unsolvableBoards.containsKey(boardSequence) && movesLeft <= unsolvableBoards.get(boardSequence))) {
+			// Returns empty ArrayList if board unsolvable
+			return new ArrayList<SwapPair[]>();
 		}
-		ArrayList<SwapPair> possibleSwaps = board.generateSwaps();
+		ArrayList<SwapPair[]> curMoves = new ArrayList<SwapPair[]>();
 		ArrayList<SwapPair[]> nextMoves;
+		ArrayList<SwapPair> possibleSwaps = board.generateSwaps();
 		int moveIndex = movesRequired - movesLeft;
 		for (SwapPair swapPair: possibleSwaps) {
 			Board boardNext = new Board(board);
@@ -35,14 +36,16 @@ public class MoveTheBox {
 			}
 			nextMoves = solve(boardNext, movesLeft - 1);
 			if (!nextMoves.isEmpty()) {
+				// Board is successfully solved in subsequent moves, add and store this swap
 				for (SwapPair[] moves: nextMoves) {
 					moves[moveIndex] = swapPair;
 				}
 				curMoves.addAll(nextMoves);
+//				return curMoves; // Return here to generate first solution found (faster) instead of all possible
 			}
 		}
 		if (curMoves.isEmpty()) {
-			unsolvableBoardSequences.put(boardSequence, movesLeft);
+			unsolvableBoards.put(boardSequence, movesLeft);
 		}
 		return curMoves;
 	}
@@ -250,7 +253,7 @@ public class MoveTheBox {
 		System.out.println(MoveTheBox.getSolutionString(solution));
 		System.out.println("Verify if all solutions are distinct");
 		System.out.println(MoveTheBox.verifyDistinctMoves(solution));
-		System.out.println("Verify if solution actually solves");
+		System.out.println("Verify if all solutions solve correctly");
 		System.out.println(MoveTheBox.verifySolution(board, solution));
 	}
 

@@ -14,6 +14,7 @@ public class Board {
 		grid = new char[WIDTH][HEIGHT];
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y ++) {
+				// Initialize board empty
 				grid[x][y] = BOX_EMPTY;
 			}
 		}
@@ -24,6 +25,7 @@ public class Board {
 		grid = new char[WIDTH][HEIGHT];
 		for (int x = 0; x < WIDTH; x++) {
 			for (int y = 0; y < HEIGHT; y++) {
+				// Copy old board to this board
 				grid[x][y] = oldBoard.getBox(x, y);
 			}
 		}
@@ -67,6 +69,7 @@ public class Board {
 		return totalBoxes == 0;
 	}
 	
+	// Returns current board/grid's unique sequence
 	public String getBoardSequence() {
 		StringBuffer sequence = new StringBuffer();
 		for (int x = 0; x < WIDTH; x++) {
@@ -77,6 +80,7 @@ public class Board {
 		return sequence.toString();
 	}
 	
+	// Generates all possible swaps/moves for current board
 	public ArrayList<SwapPair> generateSwaps() {
 		ArrayList<SwapPair> possibleSwaps = new ArrayList<SwapPair>();
 		for (int x = 0; x < WIDTH; x++) {
@@ -97,11 +101,11 @@ public class Board {
 		return possibleSwaps;
 	}
 	
+	// Cancels 3 or more consecutive identical boxes until board is steady
 	public void reachSteadyState() {
 		boolean isBoardChanged = true;
 		while (isBoardChanged) {
-			
-			// Drop boxes
+			// Drop boxes if necessary
 			for (int x = 0; x < WIDTH; x++) {
 				int bottom = 0;
 				for (int y = 0; y < HEIGHT; y++) {
@@ -116,8 +120,7 @@ public class Board {
 			
 			Board boardNext = new Board(this);
 			isBoardChanged = false;
-			// TODO: NEED TO ABSTRACT THE FOLLOWING
-			// Find consecutive vertical boxes to pop
+			// Find consecutive identical boxes to pop vertically
 			for (int x = 0; x < WIDTH; x++) {
 				for (int y = 0; y < HEIGHT; y++) {
 					char boxStart = getBox(x, y);
@@ -135,10 +138,11 @@ public class Board {
 							boardNext.setBox(x, i, BOX_EMPTY);
 						}
 					}
+					// Skip to the box after consecutive identical boxes
 					y = yNext - 1;
 				}
 			}
-			// Find consecutive horizontal boxes to pop
+			// Find consecutive identical boxes to pop horizontally
 			for (int y = 0; y < HEIGHT; y++) {
 				for (int x = 0; x < WIDTH; x++) {
 					char boxStart = getBox(x, y);
@@ -156,10 +160,11 @@ public class Board {
 							boardNext.setBox(i, y, BOX_EMPTY);
 						}
 					}
+					// Skip to the box after consecutive identical boxes
 					x = xNext - 1;
 				}
 			}
-			// Copy Grid
+			// Update this board
 			grid = boardNext.grid;
 			totalBoxes = boardNext.totalBoxes;
 		}
@@ -191,6 +196,9 @@ public class Board {
 		b.setBox(2, 2, '1');
 		b.setBox(3, 2, '1');
 		b.setBox(4, 2, '1');
+		b.setBox(2, 3, '3');
+		b.setBox(3, 3, '1');
+		b.setBox(4, 3, '3');
 		System.out.println(b.toString());
 		System.out.println(b.totalBoxes);
 		b.reachSteadyState();
