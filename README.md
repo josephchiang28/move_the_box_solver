@@ -2,12 +2,14 @@
 
 A Java program that solves a puzzle game similar to Move The Box (https://play.google.com/store/apps/details?id=ua.co.cts.sideup)
 
-## Puzzle it solves:
-The puzzle, Move The Box, that this program attempts to solve starts with a grid of various different boxes stacked on top of each other, and the objective is to clear all the boxes. Boxes can be cleared by swapping two adjacent boxes with each move resulting in 3 or more consecutive identical boxes in a row or column. Boxes will then drop to the bottom if necessary resulting in a stacked arrangement.
+## Puzzles it solve:
+The puzzles, like Move The Box, that this program can solve starts with a grid of various different boxes stacked on top of each other. The objective is to clear all the boxes. Boxes can be cleared by swapping two adjacent boxes with each move resulting in 3 or more consecutive identical boxes in a row or column. Boxes will then drop to the bottom if necessary resulting in a stacked arrangement.
 
 ## To use the solver:
 The `Board` class consists of a 2D x by y char array, which represents the box grid of the game. (0,0) is the bottom left corner of the grid and x increases to the right and y increases upwards. 
+
 With the exception of `'0'` and `'!'`, which represents a empty and invalid spot respectively, you can represent each type of box with a certain char of your liking.
+
 The solution returned by the `solve` method of MoveTheBox can be converted to a string with `MoveTheBox.getSolutionString(solution)`. The string contains a list of a list of moves. Each list is a sequence of swaps/moves that can solve the given puzzle. Each move is represented with a 4 digit number coordinate (assuming each dimension of the grid is of 9 or less) in the form of x1y1x2y2 where you swap the boxes of (x1, y1) and (x2, y2).
 
 A full example that solves Move The Box level Hamburg level 17 is as follows:
