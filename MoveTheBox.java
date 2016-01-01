@@ -116,7 +116,7 @@ public class MoveTheBox {
 	}
 	
 	public static void main(String[] args) {
-		Board board = new Board();
+		Board board = new Board(7, 9);
 		long startTime, endTime;
 		ArrayList<SwapPair[]> solution;
 		

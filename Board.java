@@ -2,18 +2,20 @@ import java.util.ArrayList;
 
 public class Board {
 
-	public static final int WIDTH = 7;
-	public static final int HEIGHT = 9;
 	public static final char BOX_EMPTY = '0';
 	public static final char BOX_INVALID = '!';
+	private int width;
+	private int height;
 	private int totalBoxes;
 	private char[][] grid;
 		   
-	public Board() {
-		totalBoxes = 0;
-		grid = new char[WIDTH][HEIGHT];
-		for (int x = 0; x < WIDTH; x++) {
-			for (int y = 0; y < HEIGHT; y ++) {
+	public Board(int width, int height) {
+		this.width = width;
+		this.height = height;
+		this.totalBoxes = 0;
+		grid = new char[width][height];
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y ++) {
 				// Initialize board empty
 				grid[x][y] = BOX_EMPTY;
 			}
@@ -21,10 +23,12 @@ public class Board {
 	}
 	
 	public Board(Board oldBoard) {
+		width = oldBoard.width;
+		height = oldBoard.height;
 		totalBoxes = oldBoard.totalBoxes;
-		grid = new char[WIDTH][HEIGHT];
-		for (int x = 0; x < WIDTH; x++) {
-			for (int y = 0; y < HEIGHT; y++) {
+		grid = new char[width][height];
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
 				// Copy old board to this board
 				grid[x][y] = oldBoard.getBox(x, y);
 			}
@@ -33,6 +37,14 @@ public class Board {
 	
 	public char[][] getGrid() {
 		return grid;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 	
 	public int getTotalBoxes() {
@@ -72,8 +84,8 @@ public class Board {
 	// Returns current board/grid's unique sequence
 	public String getBoardSequence() {
 		StringBuffer sequence = new StringBuffer();
-		for (int x = 0; x < WIDTH; x++) {
-			for (int y = 0; y < HEIGHT; y++) {
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
 				sequence.append(getBox(x, y));
 			}
 		}
@@ -83,8 +95,8 @@ public class Board {
 	// Generates all possible swaps/moves for current board
 	public ArrayList<SwapPair> generateSwaps() {
 		ArrayList<SwapPair> possibleSwaps = new ArrayList<SwapPair>();
-		for (int x = 0; x < WIDTH; x++) {
-			for (int y = 0; y < HEIGHT; y++) {
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
 				char boxCenter = getBox(x, y);
 				char boxEast = getBox(x + 1, y);
 				char boxNorth = getBox(x, y + 1);
@@ -106,9 +118,9 @@ public class Board {
 		boolean isBoardChanged = true;
 		while (isBoardChanged) {
 			// Drop boxes if necessary
-			for (int x = 0; x < WIDTH; x++) {
+			for (int x = 0; x < width; x++) {
 				int bottom = 0;
-				for (int y = 0; y < HEIGHT; y++) {
+				for (int y = 0; y < height; y++) {
 					if (getBox(x, y) != BOX_EMPTY) {
 						if (y > bottom) {
 							swapBoxes(x, bottom, x, y);
@@ -121,8 +133,8 @@ public class Board {
 			Board boardNext = new Board(this);
 			isBoardChanged = false;
 			// Find consecutive identical boxes to pop vertically
-			for (int x = 0; x < WIDTH; x++) {
-				for (int y = 0; y < HEIGHT; y++) {
+			for (int x = 0; x < width; x++) {
+				for (int y = 0; y < height; y++) {
 					char boxStart = getBox(x, y);
 					if (boxStart == BOX_EMPTY || boxStart == BOX_INVALID) {
 						continue;
@@ -143,8 +155,8 @@ public class Board {
 				}
 			}
 			// Find consecutive identical boxes to pop horizontally
-			for (int y = 0; y < HEIGHT; y++) {
-				for (int x = 0; x < WIDTH; x++) {
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
 					char boxStart = getBox(x, y);
 					if (boxStart == BOX_EMPTY || boxStart == BOX_INVALID) {
 						continue;
@@ -172,9 +184,9 @@ public class Board {
 	
 	public String toString() {
 		StringBuffer s = new StringBuffer("+-------------+\n");
-		for (int i = HEIGHT - 1; i >= 0; i--) {
+		for (int i = height - 1; i >= 0; i--) {
 			s.append("|");
-			for (int j = 0; j < WIDTH; j++) {
+			for (int j = 0; j < width; j++) {
 				s.append(getBox(j, i) + "|");
 			}
 			if (i != 0) {
@@ -186,7 +198,7 @@ public class Board {
 	}
 	
 	public static void main(String[] args) {
-		Board b = new Board();
+		Board b = new Board(7, 9);
 		b.setBox(2, 0, '1');
 		b.setBox(3, 0, '2');
 		b.setBox(4, 0, '2');
