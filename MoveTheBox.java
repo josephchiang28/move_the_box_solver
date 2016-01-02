@@ -70,20 +70,19 @@ public class MoveTheBox {
 			System.out.println("Error: Empty Solution");
 			return false;
 		}
+		boolean areDistinct = true;
 		TreeSet<String> distinctMoves = new TreeSet<String>();
 		for (SwapPair[] moves: solution) {
-			String movesString = "";
-			for (SwapPair swapPair: moves) {
-				movesString += swapPair.toString() + " ";
-			}
+			String movesString = Arrays.toString(moves);
 			if (distinctMoves.contains(movesString)) {
-				return false;
+				areDistinct = false;
+				break;
 			}
 			distinctMoves.add(movesString);
 		}
-//		System.out.println(distinctMoves);
+//		System.out.println(distinctMoves); // Prints it in sorted order
 //		System.out.println(distinctMoves.size());
-		return true;
+		return areDistinct;
 	}
 	
 	public static boolean verifySolution(Board board, ArrayList<SwapPair[]> solution) {
@@ -94,8 +93,6 @@ public class MoveTheBox {
 		boolean allPass = true;
 		for (SwapPair[] moves: solution) {
 			Board boardTest = new Board(board);
-//			System.out.println("Testing a solution...");
-//			System.out.println(boardTest);
 			for (SwapPair swapPair: moves) {
 				if (board.isComplete()) {
 					allPass = false;
@@ -104,8 +101,6 @@ public class MoveTheBox {
 				}
 				boardTest.swapBoxes(swapPair.x1, swapPair.y1, swapPair.x2, swapPair.y2);
 				boardTest.reachSteadyState();
-//				System.out.println(swapPair);
-//				System.out.println(boardTest);
 			}
 			if (!boardTest.isComplete()) {
 				allPass = false;
@@ -249,8 +244,8 @@ public class MoveTheBox {
 		solution = mtb.solve(board, mtb.movesRequired);
 		endTime = System.currentTimeMillis();
 		
-		System.out.println(String.format("Took %1$d milliseconds", endTime - startTime));
-		System.out.println(String.format("Solution size: %1$d", solution.size()));
+		System.out.println(String.format("Took %d milliseconds", endTime - startTime));
+		System.out.println(String.format("Solution size: %d", solution.size()));
 		System.out.println(MoveTheBox.getSolutionString(solution));
 		System.out.println("Verify if all solutions are distinct");
 		System.out.println(MoveTheBox.verifyDistinctMoves(solution));

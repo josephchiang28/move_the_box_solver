@@ -14,6 +14,6 @@ public class SwapPair {
 	}
 	
 	public String toString() {
-		return String.format("%1$d%2$d%3$d%4$d", x1, y1, x2, y2);
+		return String.format("%d%d%d%d", x1, y1, x2, y2);
 	}
 }
