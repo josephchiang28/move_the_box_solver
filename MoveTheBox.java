@@ -44,7 +44,8 @@ public class MoveTheBox {
 //				return curMoves; // Return here to generate first solution found (faster) instead of all possible
 			}
 		}
-		if (curMoves.isEmpty()) {
+		if (curMoves.isEmpty() 
+				&& (!unsolvableBoards.containsKey(boardSequence) || movesLeft > unsolvableBoards.get(boardSequence))) {
 			unsolvableBoards.put(boardSequence, movesLeft);
 		}
 		return curMoves;
