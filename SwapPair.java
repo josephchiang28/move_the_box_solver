@@ -13,6 +13,10 @@ public class SwapPair {
 		this.y2 = y2;
 	}
 	
+	public boolean equals(SwapPair otherSwap) {
+		return otherSwap != null && x1 == otherSwap.x1 && y1 == otherSwap.y1 && x2 == otherSwap.x2 && y2 == otherSwap.y2;
+	}
+	
 	public String toString() {
 		return String.format("%d%d%d%d", x1, y1, x2, y2);
 	}

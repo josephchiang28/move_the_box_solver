@@ -13,7 +13,7 @@ public class MoveTheBox {
 		unsolvableBoards = new HashMap<String, Integer>();
 	}
 	
-	public ArrayList<SwapPair[]> solve(Board board, int movesLeft) {	
+	public ArrayList<SwapPair[]> solve(Board board, SwapPair prevSwap, int movesLeft) {	
 		String boardSequence = board.getBoardSequence();
 		if (movesLeft <= 0 || board.getTotalBoxes() < 3
 				|| (unsolvableBoards.containsKey(boardSequence) && movesLeft <= unsolvableBoards.get(boardSequence))) {
@@ -25,16 +25,23 @@ public class MoveTheBox {
 		ArrayList<SwapPair> possibleSwaps = board.generateSwaps();
 		int moveIndex = movesRequired - movesLeft;
 		for (SwapPair swapPair: possibleSwaps) {
+			if (swapPair.equals(prevSwap)) {
+				continue;
+			}
 			Board boardNext = new Board(board);
 			boardNext.swapBoxes(swapPair.x1, swapPair.y1, swapPair.x2, swapPair.y2);
-			boardNext.reachSteadyState();
+			boolean isModified = boardNext.reachSteadyState();
 			if (boardNext.isComplete()) {
 				SwapPair[] moves = new SwapPair[movesRequired];
 				moves[moveIndex] = swapPair;
 				curMoves.add(moves);
 				return curMoves;
 			}
-			nextMoves = solve(boardNext, movesLeft - 1);
+			if (isModified) {
+				nextMoves = solve(boardNext, null, movesLeft - 1);
+			} else {
+				nextMoves = solve(boardNext, swapPair, movesLeft - 1);
+			}
 			if (!nextMoves.isEmpty()) {
 				// Board is successfully solved in subsequent moves, add and store this swap
 				for (SwapPair[] moves: nextMoves) {
@@ -241,7 +248,7 @@ public class MoveTheBox {
 		
 		System.out.println(board.toString());
 		startTime = System.currentTimeMillis();
-		solution = mtb.solve(board, mtb.movesRequired);
+		solution = mtb.solve(board, null, mtb.movesRequired);
 		endTime = System.currentTimeMillis();
 		
 		System.out.println(String.format("Took %d milliseconds", endTime - startTime));

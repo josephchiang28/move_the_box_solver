@@ -114,7 +114,8 @@ public class Board {
 	}
 	
 	// Cancels 3 or more consecutive identical boxes until board is steady
-	public void reachSteadyState() {
+	public boolean reachSteadyState() {
+		boolean isModified = false;
 		boolean isBoardChanged = true;
 		while (isBoardChanged) {
 			// Drop boxes if necessary
@@ -145,6 +146,7 @@ public class Board {
 						boxNext = getBox(x, ++yNext);
 					} while (boxStart == boxNext);
 					if (yNext - y >= 3) {
+						isModified = true;
 						isBoardChanged = true;
 						for (int i = y; i < yNext; i++) {
 							boardNext.setBox(x, i, BOX_EMPTY);
@@ -168,6 +170,7 @@ public class Board {
 					} while (boxStart == boxNext);
 					if (xNext - x >= 3) {
 						for (int i = x; i < xNext; i++) {
+							isModified = true;
 							isBoardChanged = true;
 							boardNext.setBox(i, y, BOX_EMPTY);
 						}
@@ -180,6 +183,7 @@ public class Board {
 			grid = boardNext.grid;
 			totalBoxes = boardNext.totalBoxes;
 		}
+		return isModified;
 	}
 	
 	public String toString() {
