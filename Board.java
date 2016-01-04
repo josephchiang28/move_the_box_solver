@@ -16,7 +16,7 @@ public class Board {
 		grid = new char[width][height];
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y ++) {
-				// Initialize board empty
+				// Initialize grid empty
 				grid[x][y] = BOX_EMPTY;
 			}
 		}
@@ -29,14 +29,10 @@ public class Board {
 		grid = new char[width][height];
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				// Copy old board to this board
+				// Copy old grid to this grid
 				grid[x][y] = oldBoard.getBox(x, y);
 			}
 		}
-	}
-	
-	public char[][] getGrid() {
-		return grid;
 	}
 	
 	public int getWidth() {
@@ -49,6 +45,10 @@ public class Board {
 	
 	public int getTotalBoxes() {
 		return totalBoxes;
+	}
+	
+	public char[][] getGrid() {
+		return grid;
 	}
 	
 	public char getBox(int x, int y) {
@@ -93,18 +93,22 @@ public class Board {
 	}
 	
 	// Drop boxes if necessary to ensure no vertical gaps between boxes
-	public void gravitateBoxes() {
+	public boolean gravitateBoxes() {
+		boolean isBoardChanged = false;
+		int bottom;
 		for (int x = 0; x < width; x++) {
-			int bottom = 0;
+			bottom = 0;
 			for (int y = 0; y < height; y++) {
 				if (getBox(x, y) != BOX_EMPTY) {
 					if (y > bottom) {
 						swapBoxes(x, bottom, x, y);
+						isBoardChanged = true;
 					}
 					bottom++;
 				}
 			}
 		}
+		return isBoardChanged;
 	}
 	
 	// Generates all possible swaps/moves for current board
@@ -130,10 +134,10 @@ public class Board {
 	
 	// Cancels 3 or more consecutive identical boxes until board is steady
 	public boolean reachSteadyState() {
-		boolean isBoardChanged = false;
+		// Need to gravitate boxes first to make sure board is in valid state
+		boolean isBoardChanged = gravitateBoxes();
 		boolean areBoxesCanceled = true;
-		gravitateBoxes();
-		while (areBoxesCanceled) {
+		while (areBoxesCanceled && !isComplete()) {
 			Board boardNext = new Board(this);
 			areBoxesCanceled = false;
 			// Find consecutive identical boxes to pop vertically

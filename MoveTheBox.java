@@ -20,12 +20,10 @@ public class MoveTheBox {
 			// Returns empty ArrayList if board unsolvable
 			return new ArrayList<SwapPair[]>();
 		}
-		ArrayList<SwapPair[]> curMoves = new ArrayList<SwapPair[]>();
-		ArrayList<SwapPair[]> nextMoves;
-		ArrayList<SwapPair> possibleSwaps = board.generateSwaps();
+		ArrayList<SwapPair[]> nextMoves, curMoves = new ArrayList<SwapPair[]>();
 		int moveIndex = movesRequired - movesLeft;
 		boolean isBoardChanged;
-		for (SwapPair swapPair: possibleSwaps) {
+		for (SwapPair swapPair: board.generateSwaps()) {
 			if (swapPair.equals(prevSwap)) {
 				continue;
 			}
@@ -76,8 +74,7 @@ public class MoveTheBox {
 	public static TreeSet<String> getSolutionTreeSet(ArrayList<SwapPair[]> solution) {
 		TreeSet<String> distinctMoves = new TreeSet<String>();
 		for (SwapPair[] moves: solution) {
-			String movesString = Arrays.toString(moves);
-			distinctMoves.add(movesString);
+			distinctMoves.add(Arrays.toString(moves));
 		}
 		return distinctMoves;
 	}
@@ -94,15 +91,22 @@ public class MoveTheBox {
 				if (board.isComplete()) {
 					allPass = false;
 					System.out.print("Board completed with redundant moves: ");
-					System.out.println(moves);
+					System.out.println(Arrays.toString(moves));
+					break;
+				} else if (swapPair == null) {
+					allPass = false;
+					System.out.print("Contains a null swap: ");
+					System.out.println(Arrays.toString(moves));
+					break;
+				} else {
+					boardTest.swapBoxes(swapPair.x1, swapPair.y1, swapPair.x2, swapPair.y2);
+					boardTest.reachSteadyState();
 				}
-				boardTest.swapBoxes(swapPair.x1, swapPair.y1, swapPair.x2, swapPair.y2);
-				boardTest.reachSteadyState();
 			}
 			if (!boardTest.isComplete()) {
 				allPass = false;
 				System.out.print("Board not completed with moves: ");
-				System.out.println(moves);
+				System.out.println(Arrays.toString(moves));
 			}
 		}
 		return allPass;
