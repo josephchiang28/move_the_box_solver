@@ -92,6 +92,21 @@ public class Board {
 		return sequence.toString();
 	}
 	
+	// Drop boxes if necessary to ensure no vertical gaps between boxes
+	public void gravitateBoxes() {
+		for (int x = 0; x < width; x++) {
+			int bottom = 0;
+			for (int y = 0; y < height; y++) {
+				if (getBox(x, y) != BOX_EMPTY) {
+					if (y > bottom) {
+						swapBoxes(x, bottom, x, y);
+					}
+					bottom++;
+				}
+			}
+		}
+	}
+	
 	// Generates all possible swaps/moves for current board
 	public ArrayList<SwapPair> generateSwaps() {
 		ArrayList<SwapPair> possibleSwaps = new ArrayList<SwapPair>();
@@ -117,20 +132,8 @@ public class Board {
 	public boolean reachSteadyState() {
 		boolean isBoardChanged = false;
 		boolean areBoxesCanceled = true;
+		gravitateBoxes();
 		while (areBoxesCanceled) {
-			// Drop boxes if necessary
-			for (int x = 0; x < width; x++) {
-				int bottom = 0;
-				for (int y = 0; y < height; y++) {
-					if (getBox(x, y) != BOX_EMPTY) {
-						if (y > bottom) {
-							swapBoxes(x, bottom, x, y);
-						}
-						bottom++;
-					}
-				}
-			}
-			
 			Board boardNext = new Board(this);
 			areBoxesCanceled = false;
 			// Find consecutive identical boxes to pop vertically
@@ -179,9 +182,12 @@ public class Board {
 					x = xNext - 1;
 				}
 			}
-			// Update this board
-			grid = boardNext.grid;
-			totalBoxes = boardNext.totalBoxes;
+			
+			if (isBoardChanged) {
+				grid = boardNext.grid;
+				totalBoxes = boardNext.totalBoxes;
+				gravitateBoxes();
+			}
 		}
 		return isBoardChanged;
 	}

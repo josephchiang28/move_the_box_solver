@@ -265,6 +265,7 @@ public class MoveTheBox {
 		System.out.println("Sorted generated solution:");
 		System.out.println(solutionStringSorted);
 		System.out.println(String.format("Solution size: %d", solution.size()));
+		System.out.println(String.format("Number of unsolvable boards pruned out: %d", mtb.unsolvableBoards.size()));
 		System.out.println("Verify if generated solution matches standard solution:");
 		System.out.println(standardSolutionString.equals(solutionStringSorted));
 		System.out.println("Verify if all solutions are distinct:");
