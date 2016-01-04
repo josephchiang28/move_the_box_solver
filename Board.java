@@ -115,9 +115,9 @@ public class Board {
 	
 	// Cancels 3 or more consecutive identical boxes until board is steady
 	public boolean reachSteadyState() {
-		boolean isModified = false;
-		boolean isBoardChanged = true;
-		while (isBoardChanged) {
+		boolean isBoardChanged = false;
+		boolean areBoxesCanceled = true;
+		while (areBoxesCanceled) {
 			// Drop boxes if necessary
 			for (int x = 0; x < width; x++) {
 				int bottom = 0;
@@ -132,7 +132,7 @@ public class Board {
 			}
 			
 			Board boardNext = new Board(this);
-			isBoardChanged = false;
+			areBoxesCanceled = false;
 			// Find consecutive identical boxes to pop vertically
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
@@ -146,8 +146,8 @@ public class Board {
 						boxNext = getBox(x, ++yNext);
 					} while (boxStart == boxNext);
 					if (yNext - y >= 3) {
-						isModified = true;
 						isBoardChanged = true;
+						areBoxesCanceled = true;
 						for (int i = y; i < yNext; i++) {
 							boardNext.setBox(x, i, BOX_EMPTY);
 						}
@@ -170,8 +170,8 @@ public class Board {
 					} while (boxStart == boxNext);
 					if (xNext - x >= 3) {
 						for (int i = x; i < xNext; i++) {
-							isModified = true;
 							isBoardChanged = true;
+							areBoxesCanceled = true;
 							boardNext.setBox(i, y, BOX_EMPTY);
 						}
 					}
@@ -183,7 +183,7 @@ public class Board {
 			grid = boardNext.grid;
 			totalBoxes = boardNext.totalBoxes;
 		}
-		return isModified;
+		return isBoardChanged;
 	}
 	
 	public String toString() {

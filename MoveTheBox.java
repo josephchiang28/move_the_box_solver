@@ -24,20 +24,21 @@ public class MoveTheBox {
 		ArrayList<SwapPair[]> nextMoves;
 		ArrayList<SwapPair> possibleSwaps = board.generateSwaps();
 		int moveIndex = movesRequired - movesLeft;
+		boolean isBoardChanged;
 		for (SwapPair swapPair: possibleSwaps) {
 			if (swapPair.equals(prevSwap)) {
 				continue;
 			}
 			Board boardNext = new Board(board);
 			boardNext.swapBoxes(swapPair.x1, swapPair.y1, swapPair.x2, swapPair.y2);
-			boolean isModified = boardNext.reachSteadyState();
+			isBoardChanged = boardNext.reachSteadyState();
 			if (boardNext.isComplete()) {
 				SwapPair[] moves = new SwapPair[movesRequired];
 				moves[moveIndex] = swapPair;
 				curMoves.add(moves);
 				return curMoves;
 			}
-			if (isModified) {
+			if (isBoardChanged) {
 				nextMoves = solve(boardNext, null, movesLeft - 1);
 			} else {
 				nextMoves = solve(boardNext, swapPair, movesLeft - 1);
@@ -72,24 +73,13 @@ public class MoveTheBox {
 		return sb.toString();
 	}
 	
-	public static boolean verifyDistinctMoves(ArrayList<SwapPair[]> solution) {
-		if (solution.isEmpty()) {
-			System.out.println("Error: Empty Solution");
-			return false;
-		}
-		boolean areDistinct = true;
+	public static TreeSet<String> getSolutionTreeSet(ArrayList<SwapPair[]> solution) {
 		TreeSet<String> distinctMoves = new TreeSet<String>();
 		for (SwapPair[] moves: solution) {
 			String movesString = Arrays.toString(moves);
-			if (distinctMoves.contains(movesString)) {
-				areDistinct = false;
-				break;
-			}
 			distinctMoves.add(movesString);
 		}
-//		System.out.println(distinctMoves); // Prints it in sorted order
-//		System.out.println(distinctMoves.size());
-		return areDistinct;
+		return distinctMoves;
 	}
 	
 	public static boolean verifySolution(Board board, ArrayList<SwapPair[]> solution) {
@@ -119,22 +109,29 @@ public class MoveTheBox {
 	}
 	
 	public static void main(String[] args) {
-		Board board = new Board(7, 9);
+		MoveTheBox mtb;
+		Board board;
 		long startTime, endTime;
 		ArrayList<SwapPair[]> solution;
+		TreeSet<String> solutionTreeSet;
+		String solutionStringSorted;
+		String standardSolutionString;
 		
 		// Simple test, moves = 1
-//		MoveTheBox mtb = new MoveTheBox(1);
+//		mtb = new MoveTheBox(1);
+//		board = new Board(7, 9);
 //		board.setBox(0, 0, '1');
 //		board.setBox(1, 0, '2');
 //		board.setBox(2, 0, '1');
 //		board.setBox(0, 1, '2');
 //		board.setBox(1, 1, '1');
 //		board.setBox(2, 1, '2');
+//		standardSolutionString = "[[1011]]";
 		// End simple test
 
 		// Hamburg lvl 3, moves = 1
-//		MoveTheBox mtb = new MoveTheBox(1);
+//		mtb = new MoveTheBox(1);
+//		board = new Board(7, 9);
 //		board.setBox(2, 0, '1');
 //		board.setBox(2, 1, '2');
 //		board.setBox(2, 2, '1');
@@ -147,10 +144,12 @@ public class MoveTheBox {
 //		board.setBox(4, 3, '3');
 //		board.setBox(4, 4, '1');
 //		board.setBox(4, 5, '2');
+//		standardSolutionString = "[[4142]]";
 		// End Hamburg lvl 3
 
 		// Hamburg lvl 6, moves = 2
-//		MoveTheBox mtb = new MoveTheBox(2);
+//		mtb = new MoveTheBox(2);
+//		board = new Board(7, 9);
 //		board.setBox(2, 0, '1');
 //		board.setBox(3, 0, '2');
 //		board.setBox(3, 1, '3');
@@ -163,10 +162,12 @@ public class MoveTheBox {
 //		board.setBox(5, 0, '3');
 //		board.setBox(5, 1, '4');
 //		board.setBox(6, 0, '4');
+//		standardSolutionString = "[[2333, 2021]]";
 		// End Hamburg lvl 6
 
 		// Hamburg lvl 17, moves = 3
-//		MoveTheBox mtb = new MoveTheBox(3);
+//		mtb = new MoveTheBox(3);
+//		board = new Board(7, 9);
 //		board.setBox(0, 0, '1');
 //		board.setBox(1, 0, '1');
 //		board.setBox(1, 1, '2');
@@ -186,10 +187,12 @@ public class MoveTheBox {
 //		board.setBox(5, 0, '4');
 //		board.setBox(5, 1, '2');
 //		board.setBox(5, 2, '1');
+//		standardSolutionString = "[[2131, 2223, 5051], [2131, 4142, 2223], [2131, 5152, 2223], [2223, 2131, 5051], [2223, 4142, 2131], [2223, 5152, 2131], [4142, 2131, 2223], [4142, 2223, 2131], [5152, 2131, 2223], [5152, 2223, 2131]]";
 		// End Hamburg lvl 17
 		 
 		// Hamburg lvl 24, moves = 4
-//		MoveTheBox mtb = new MoveTheBox(4);
+//		mtb = new MoveTheBox(4);
+//		board = new Board(7, 9);
 //		board.setBox(2, 0, '1');
 //		board.setBox(2, 1, '1');
 //		board.setBox(2, 2, '2');
@@ -206,10 +209,12 @@ public class MoveTheBox {
 //		board.setBox(5, 0, '4');
 //		board.setBox(5, 1, '1');
 //		board.setBox(6, 0, '4');
+//		standardSolutionString = "[[1323, 2434, 3233, 2232], [1323, 3233, 2232, 2434], [1323, 3233, 2434, 2232], [2223, 2333, 1222, 2434], [2223, 2333, 2434, 1222], [2223, 2434, 2333, 1222], [2434, 1323, 3233, 2232], [2434, 1424, 3233, 2232], [2434, 2223, 2333, 1222], [2434, 3233, 1323, 2232], [2434, 3233, 1424, 2232], [3233, 1323, 2232, 2434], [3233, 1323, 2434, 2232], [3233, 2434, 1323, 2232], [3233, 2434, 1424, 2232]]";
 		// End Hamburg lvl 24
 		
 		// Start Paris lvl 24, moves = 4
-//		MoveTheBox mtb = new MoveTheBox(4);
+//		mtb = new MoveTheBox(4);
+//		board = new Board(7, 9);
 //		board.setBox(0, 0, '1');
 //		board.setBox(2, 0, '1');
 //		board.setBox(2, 1, '2');
@@ -225,10 +230,12 @@ public class MoveTheBox {
 //		board.setBox(4, 2, '2');
 //		board.setBox(4, 3, '1');
 //		board.setBox(4, 4, '4');
+//		standardSolutionString = "[[1020, 3141, 4142, 4050], [1020, 4142, 3242, 4050], [1222, 3141, 3132, 4050], [1222, 4142, 3242, 4050], [1424, 3141, 4142, 4050], [3141, 1020, 4142, 4050], [3141, 1222, 3132, 4050], [3141, 1424, 4142, 4050], [3141, 3132, 1222, 4050], [3141, 4142, 1020, 4050], [3141, 4142, 1222, 4050], [3141, 4142, 1424, 4050], [4142, 1020, 3242, 4050], [4142, 1222, 3242, 4050], [4142, 3242, 1020, 4050], [4142, 3242, 1222, 4050], [4142, 3242, 4050, 1020]]";
 		// End Paris lvl 24
 		
 		// Start Paris lvl 24 modified, moves = 5
-		MoveTheBox mtb = new MoveTheBox(5);
+		mtb = new MoveTheBox(5);
+		board = new Board(7, 9);
 		board.setBox(0, 0, '1');
 		board.setBox(3, 0, '1');
 		board.setBox(3, 1, '2');
@@ -244,6 +251,7 @@ public class MoveTheBox {
 		board.setBox(5, 2, '2');
 		board.setBox(5, 3, '1');
 		board.setBox(5, 4, '4');
+		standardSolutionString = "[[0010, 2030, 4151, 5152, 5060], [0010, 2030, 5152, 4252, 5060], [0010, 2232, 4151, 4142, 5060], [0010, 2232, 5152, 4252, 5060], [0010, 2434, 4151, 5152, 5060], [0010, 4151, 2030, 5152, 5060], [0010, 4151, 2232, 4142, 5060], [0010, 4151, 2434, 5152, 5060], [0010, 4151, 4142, 2232, 5060], [0010, 4151, 5152, 2030, 5060], [0010, 4151, 5152, 2232, 5060], [0010, 4151, 5152, 2434, 5060], [0010, 5152, 2030, 4252, 5060], [0010, 5152, 2232, 4252, 5060], [0010, 5152, 4252, 2030, 5060], [0010, 5152, 4252, 2232, 5060], [0010, 5152, 4252, 5060, 2030], [2030, 0010, 4151, 5152, 5060], [2030, 0010, 5152, 4252, 5060], [2030, 4151, 0010, 5152, 5060], [2030, 4151, 5152, 0010, 5060], [2030, 4151, 5152, 5060, 0010], [2030, 5152, 0010, 4252, 5060], [2030, 5152, 4252, 0010, 5060], [2030, 5152, 4252, 5060, 0010], [2232, 0010, 4151, 4142, 5060], [2232, 0010, 5152, 4252, 5060], [2232, 4151, 0010, 4142, 5060], [2232, 4151, 4142, 0010, 5060], [2232, 4151, 5152, 0010, 5060], [2232, 4151, 5152, 5060, 0010], [2232, 5152, 0010, 4252, 5060], [2232, 5152, 4252, 0010, 5060], [2232, 5152, 4252, 5060, 0010], [2434, 0010, 4151, 5152, 5060], [2434, 4151, 0010, 5152, 5060], [2434, 4151, 5152, 0010, 5060], [2434, 5152, 4252, 5060, 0010], [4151, 0010, 2030, 5152, 5060], [4151, 0010, 2232, 4142, 5060], [4151, 0010, 2434, 5152, 5060], [4151, 0010, 4142, 2232, 5060], [4151, 0010, 5152, 2030, 5060], [4151, 0010, 5152, 2232, 5060], [4151, 0010, 5152, 2434, 5060], [4151, 2030, 0010, 5152, 5060], [4151, 2030, 5152, 0010, 5060], [4151, 2030, 5152, 5060, 0010], [4151, 2232, 0010, 4142, 5060], [4151, 2232, 4142, 0010, 5060], [4151, 2232, 5152, 0010, 5060], [4151, 2232, 5152, 5060, 0010], [4151, 2434, 0010, 5152, 5060], [4151, 2434, 5152, 0010, 5060], [4151, 4142, 0010, 2232, 5060], [4151, 4142, 2232, 0010, 5060], [4151, 5152, 0010, 2030, 5060], [4151, 5152, 0010, 2232, 5060], [4151, 5152, 0010, 2434, 5060], [4151, 5152, 2030, 0010, 5060], [4151, 5152, 2030, 5060, 0010], [4151, 5152, 2232, 0010, 5060], [4151, 5152, 2232, 5060, 0010], [4151, 5152, 2434, 0010, 5060], [5152, 0010, 2030, 4252, 5060], [5152, 0010, 2232, 4252, 5060], [5152, 0010, 4252, 2030, 5060], [5152, 0010, 4252, 2232, 5060], [5152, 0010, 4252, 5060, 2030], [5152, 2030, 0010, 4252, 5060], [5152, 2030, 4252, 0010, 5060], [5152, 2030, 4252, 5060, 0010], [5152, 2232, 0010, 4252, 5060], [5152, 2232, 4252, 0010, 5060], [5152, 2232, 4252, 5060, 0010], [5152, 2434, 4252, 5060, 0010], [5152, 4252, 0010, 2030, 5060], [5152, 4252, 0010, 2232, 5060], [5152, 4252, 0010, 5060, 2030], [5152, 4252, 2030, 0010, 5060], [5152, 4252, 2030, 5060, 0010], [5152, 4252, 2232, 0010, 5060], [5152, 4252, 2232, 5060, 0010], [5152, 4252, 2434, 5060, 0010], [5152, 4252, 5060, 0010, 2030], [5152, 4252, 5060, 2030, 0010], [5152, 4252, 5060, 2333, 0010]]";
 		// End Paris lvl 24 modified
 		
 		System.out.println(board.toString());
@@ -252,12 +260,17 @@ public class MoveTheBox {
 		endTime = System.currentTimeMillis();
 		
 		System.out.println(String.format("Took %d milliseconds", endTime - startTime));
+		solutionTreeSet = getSolutionTreeSet(solution);
+		solutionStringSorted = solutionTreeSet.toString();
+		System.out.println("Sorted generated solution:");
+		System.out.println(solutionStringSorted);
 		System.out.println(String.format("Solution size: %d", solution.size()));
-		System.out.println(MoveTheBox.getSolutionString(solution));
-		System.out.println("Verify if all solutions are distinct");
-		System.out.println(MoveTheBox.verifyDistinctMoves(solution));
-		System.out.println("Verify if all solutions solve correctly");
-		System.out.println(MoveTheBox.verifySolution(board, solution));
+		System.out.println("Verify if generated solution matches standard solution:");
+		System.out.println(standardSolutionString.equals(solutionStringSorted));
+		System.out.println("Verify if all solutions are distinct:");
+		System.out.println(solution.size() == solutionTreeSet.size());
+		System.out.println("Verify if all solutions solve correctly:");
+		System.out.println(verifySolution(board, solution));
 	}
 
 }
