@@ -23,11 +23,12 @@ public class MoveTheBox {
 		ArrayList<SwapPair[]> nextMoves, curMoves = new ArrayList<SwapPair[]>();
 		int moveIndex = movesRequired - movesLeft;
 		boolean isBoardChanged;
+		Board boardNext;
 		for (SwapPair swapPair: board.generateSwaps()) {
 			if (swapPair.equals(prevSwap)) {
 				continue;
 			}
-			Board boardNext = new Board(board);
+			boardNext = new Board(board);
 			boardNext.swapBoxes(swapPair.x1, swapPair.y1, swapPair.x2, swapPair.y2);
 			isBoardChanged = boardNext.reachSteadyState();
 			if (boardNext.isComplete()) {

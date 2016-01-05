@@ -137,18 +137,20 @@ public class Board {
 		// Need to gravitate boxes first to make sure board is in valid state
 		boolean isBoardChanged = gravitateBoxes();
 		boolean areBoxesCanceled = true;
+		char boxStart, boxNext;
+		int xNext, yNext;
+		Board boardNext;
 		while (areBoxesCanceled && !isComplete()) {
-			Board boardNext = new Board(this);
+			boardNext = new Board(this);
 			areBoxesCanceled = false;
 			// Find consecutive identical boxes to pop vertically
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
-					char boxStart = getBox(x, y);
+					boxStart = getBox(x, y);
 					if (boxStart == BOX_EMPTY || boxStart == BOX_INVALID) {
-						continue;
+						break;
 					}
-					int yNext = y;
-					char boxNext;
+					yNext = y;
 					do {
 						boxNext = getBox(x, ++yNext);
 					} while (boxStart == boxNext);
@@ -166,19 +168,18 @@ public class Board {
 			// Find consecutive identical boxes to pop horizontally
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
-					char boxStart = getBox(x, y);
+					boxStart = getBox(x, y);
 					if (boxStart == BOX_EMPTY || boxStart == BOX_INVALID) {
 						continue;
 					}
-					int xNext = x;
-					char boxNext;
+					xNext = x;
 					do {
 						boxNext = getBox(++xNext, y);
 					} while (boxStart == boxNext);
 					if (xNext - x >= 3) {
+						isBoardChanged = true;
+						areBoxesCanceled = true;
 						for (int i = x; i < xNext; i++) {
-							isBoardChanged = true;
-							areBoxesCanceled = true;
 							boardNext.setBox(i, y, BOX_EMPTY);
 						}
 					}
@@ -187,7 +188,7 @@ public class Board {
 				}
 			}
 			
-			if (isBoardChanged) {
+			if (areBoxesCanceled) {
 				grid = boardNext.grid;
 				totalBoxes = boardNext.totalBoxes;
 				gravitateBoxes();
