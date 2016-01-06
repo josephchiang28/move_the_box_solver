@@ -13,6 +13,8 @@ public class MoveTheBox {
 		unsolvableBoards = new HashMap<String, Integer>();
 	}
 	
+	// Recursively solves the board given with number of moves left
+	// prevSwap is to prevent redundant swaps that revert the board to its previous arrangement
 	public ArrayList<SwapPair[]> solve(Board board, SwapPair prevSwap, int movesLeft) {	
 		String boardSequence = board.getBoardSequence();
 		if (movesLeft <= 0 || board.getTotalBoxes() < 3

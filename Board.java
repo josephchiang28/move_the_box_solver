@@ -63,9 +63,9 @@ public class Board {
 		char box = getBox(x, y);
 		if (box == type || box == BOX_INVALID || type == BOX_INVALID) {
 			return;
-		} else if (box == BOX_EMPTY && type != BOX_EMPTY) {
+		} else if (box == BOX_EMPTY) {
 			totalBoxes++;
-		} else if (box != BOX_EMPTY && type == BOX_EMPTY) {
+		} else if (type == BOX_EMPTY) {
 			totalBoxes--;
 		}
 		grid[x][y] = type;
@@ -93,6 +93,7 @@ public class Board {
 	}
 	
 	// Drop boxes if necessary to ensure no vertical gaps between boxes
+	// Returns whether if the board arrangement is changed as a result
 	public boolean gravitateBoxes() {
 		boolean isBoardChanged = false;
 		int bottom;
@@ -113,31 +114,33 @@ public class Board {
 	
 	// Generates all possible swaps/moves for current board
 	public ArrayList<SwapPair> generateSwaps() {
-		ArrayList<SwapPair> possibleSwaps = new ArrayList<SwapPair>();
+		ArrayList<SwapPair> potentialSwaps = new ArrayList<SwapPair>();
+		char boxCenter, boxEast, boxNorth;
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				char boxCenter = getBox(x, y);
-				char boxEast = getBox(x + 1, y);
-				char boxNorth = getBox(x, y + 1);
+				boxCenter = getBox(x, y);
+				boxEast = getBox(x + 1, y);
+				boxNorth = getBox(x, y + 1);
 				if (boxEast != BOX_INVALID && boxCenter != boxEast) {
 					// Add horizontal swaps
-					possibleSwaps.add(new SwapPair(x, y, x + 1, y));
+					potentialSwaps.add(new SwapPair(x, y, x + 1, y));
 				}
 				if (boxNorth != BOX_INVALID && boxCenter != boxNorth) {
 					// Add vertical swaps
-					possibleSwaps.add(new SwapPair(x, y, x, y + 1));
+					potentialSwaps.add(new SwapPair(x, y, x, y + 1));
 				}
 			}
 		}
-		return possibleSwaps;
+		return potentialSwaps;
 	}
 	
 	// Cancels 3 or more consecutive identical boxes until board is steady
+	// Returns whether the board is changed due to box gravitation or cancellation
 	public boolean reachSteadyState() {
 		// Need to gravitate boxes first to make sure board is in valid state
 		boolean isBoardChanged = gravitateBoxes();
 		boolean areBoxesCanceled = true;
-		char boxStart, boxNext;
+		char boxStart;
 		int xNext, yNext;
 		Board boardNext;
 		while (areBoxesCanceled && !isComplete()) {
@@ -151,18 +154,15 @@ public class Board {
 						break;
 					}
 					yNext = y;
-					do {
-						boxNext = getBox(x, ++yNext);
-					} while (boxStart == boxNext);
+					while (boxStart == getBox(x, ++yNext)) {}
 					if (yNext - y >= 3) {
 						isBoardChanged = true;
 						areBoxesCanceled = true;
-						for (int i = y; i < yNext; i++) {
-							boardNext.setBox(x, i, BOX_EMPTY);
+						// Shifts y to index at the end of consecutive identical boxes
+						for (; y < yNext; y++) {
+							boardNext.setBox(x, y, BOX_EMPTY);
 						}
 					}
-					// Skip to the box after consecutive identical boxes
-					y = yNext - 1;
 				}
 			}
 			// Find consecutive identical boxes to pop horizontally
@@ -173,18 +173,15 @@ public class Board {
 						continue;
 					}
 					xNext = x;
-					do {
-						boxNext = getBox(++xNext, y);
-					} while (boxStart == boxNext);
+					while (boxStart == getBox(++xNext, y)) {}
 					if (xNext - x >= 3) {
 						isBoardChanged = true;
 						areBoxesCanceled = true;
-						for (int i = x; i < xNext; i++) {
-							boardNext.setBox(i, y, BOX_EMPTY);
+						// Shifts x to index at the end of consecutive identical boxes
+						for (; x < xNext; x++) {
+							boardNext.setBox(x, y, BOX_EMPTY);
 						}
 					}
-					// Skip to the box after consecutive identical boxes
-					x = xNext - 1;
 				}
 			}
 			
