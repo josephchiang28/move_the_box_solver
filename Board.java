@@ -59,22 +59,26 @@ public class Board {
 		}
 	}
 	
-	public void setBox(int x, int y, char type) {
+	// Returns whether the box is successfully set
+	public boolean setBox(int x, int y, char type) {
 		char box = getBox(x, y);
-		if (box == type || box == BOX_INVALID || type == BOX_INVALID) {
-			return;
+		if (box == BOX_INVALID || type == BOX_INVALID) {
+			return false;
+		} else if (box == type) {
+			return true;
 		} else if (box == BOX_EMPTY) {
 			totalBoxes++;
 		} else if (type == BOX_EMPTY) {
 			totalBoxes--;
 		}
 		grid[x][y] = type;
+		return true;
 	}
 	
-	public void swapBoxes(int x1, int y1, int x2, int y2) {
+	// Returns whether the boxes are successfully swapped
+	public boolean swapBoxes(int x1, int y1, int x2, int y2) {
 		char box1Type = getBox(x1, y1);
-		setBox(x1, y1, getBox(x2, y2));
-		setBox(x2, y2, box1Type);
+		return setBox(x1, y1, getBox(x2, y2)) && setBox(x2, y2, box1Type);
 	}
 	
 	public boolean isComplete() {
@@ -102,8 +106,7 @@ public class Board {
 			for (int y = 0; y < height; y++) {
 				if (getBox(x, y) != BOX_EMPTY) {
 					if (y > bottom) {
-						swapBoxes(x, bottom, x, y);
-						isBoardChanged = true;
+						isBoardChanged |= swapBoxes(x, bottom, x, y);
 					}
 					bottom++;
 				}

@@ -31,7 +31,10 @@ public class MoveTheBox {
 				continue;
 			}
 			boardNext = new Board(board);
-			boardNext.swapBoxes(swapPair.x1, swapPair.y1, swapPair.x2, swapPair.y2);
+			if (!boardNext.swapBoxes(swapPair.x1, swapPair.y1, swapPair.x2, swapPair.y2)) {
+				// Ignore this move if the swap fails
+				continue;
+			}
 			isBoardChanged = boardNext.reachSteadyState();
 			if (boardNext.isComplete()) {
 				SwapPair[] moves = new SwapPair[movesRequired];
