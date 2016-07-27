@@ -142,7 +142,7 @@ public class Board {
 	public boolean reachSteadyState() {
 		// Need to gravitate boxes first to make sure board is in valid state
 		boolean isBoardChanged = gravitateBoxes();
-		boolean areBoxesCanceled = true;
+		boolean areBoxesCanceled = true; // Set to true initially to start the while loop below
 		char boxStart;
 		int xNext, yNext;
 		Board boardNext;

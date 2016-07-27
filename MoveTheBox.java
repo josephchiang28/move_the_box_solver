@@ -15,16 +15,16 @@ public class MoveTheBox {
 	
 	// Recursively solves the board given with number of moves left
 	// prevSwap is to prevent redundant swaps that revert the board to its previous arrangement
+	// prevSwap is set to null at first or if the previous swap caused boxes to cancel
 	public ArrayList<SwapPair[]> solve(Board board, SwapPair prevSwap, int movesLeft) {	
 		String boardSequence = board.getBoardSequence();
 		if (movesLeft <= 0 || board.getTotalBoxes() < 3
 				|| (unsolvableBoards.containsKey(boardSequence) && movesLeft <= unsolvableBoards.get(boardSequence))) {
-			// Returns empty ArrayList if board unsolvable
+			// Returns empty ArrayList if board unsolvable or starts with an empty board.
 			return new ArrayList<SwapPair[]>();
 		}
 		ArrayList<SwapPair[]> nextMoves, curMoves = new ArrayList<SwapPair[]>();
 		int moveIndex = movesRequired - movesLeft;
-		boolean isBoardChanged;
 		Board boardNext;
 		for (SwapPair swapPair: board.generateSwaps()) {
 			if (swapPair.equals(prevSwap)) {
@@ -35,14 +35,13 @@ public class MoveTheBox {
 				// Ignore this move if the swap fails
 				continue;
 			}
-			isBoardChanged = boardNext.reachSteadyState();
-			if (boardNext.isComplete()) {
-				SwapPair[] moves = new SwapPair[movesRequired];
-				moves[moveIndex] = swapPair;
-				curMoves.add(moves);
-				return curMoves;
-			}
-			if (isBoardChanged) {
+			if (boardNext.reachSteadyState()) { // If boxes are canceled and boardNext reaches a new steady state
+				if (boardNext.isComplete()) {
+					SwapPair[] moves = new SwapPair[movesRequired];
+					moves[moveIndex] = swapPair;
+					curMoves.add(moves);
+					return curMoves;
+				}
 				nextMoves = solve(boardNext, null, movesLeft - 1);
 			} else {
 				nextMoves = solve(boardNext, swapPair, movesLeft - 1);
