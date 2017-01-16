@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.ArrayList;
 
 public class Board {
@@ -56,6 +57,24 @@ public class Board {
 			return grid[x][y];
 		} catch (IndexOutOfBoundsException e) {
 			return BOX_INVALID;
+		}
+	}
+	
+	public void trimGrid() {
+		for (int y = 0; y < height; y++) {
+			boolean rowHasBox = false;
+			for (int x = 0; x < width; x++) {
+				if (grid[x][y] != '0') {
+					rowHasBox = true;
+					break;
+				}
+			}
+			if (!rowHasBox) {
+				for (int x = 0; x < width; x++) {
+					grid[x] = Arrays.copyOfRange(grid[x], 0, y);
+				}
+				this.height = y;
+			}
 		}
 	}
 	
